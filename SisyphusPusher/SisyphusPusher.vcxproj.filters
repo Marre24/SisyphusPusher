@@ -15,14 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Glory.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="Button.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrButton.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Sans.TTF" />
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="FiraCode.ttf" />
   </ItemGroup>
 </Project>

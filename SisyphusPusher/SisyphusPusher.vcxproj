@@ -132,13 +132,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="Sans.TTF" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Glory.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Button.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="StrButton.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EventHandler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="FiraCode.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
