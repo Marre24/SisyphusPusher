@@ -7,9 +7,8 @@
 class Button
 {
 protected:
-	SDL_Rect rect = { 0, 0, 0, 0};
 	bool isHovering = false;
-
+	SDL_Rect rect = { 0, 0, 0, 0};
 	SDL_Surface* btn;
 	SDL_Surface* btnHover;
 
@@ -39,10 +38,15 @@ public:
 		return 0;
 	}
 
-	void SetTexture(SDL_Surface* surface, SDL_Renderer *renderer) {
+	int SetTexture(SDL_Surface* surface, SDL_Renderer *renderer) {
 		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 		SDL_RenderCopy(renderer, texture, NULL, &rect);
+		SDL_DestroyTexture(texture);
+		return 0;
 	}
 
+	~Button() {
+		SDL_FreeSurface(btn);
+		SDL_FreeSurface(btnHover);
+	}
 };
-

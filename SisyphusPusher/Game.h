@@ -9,18 +9,21 @@
 #include "Glory.h";
 #include "StrButton.h";
 #include "EventHandler.h";
+#include "Sisyphus.h";
 
 
 class Game
 {
 private:
-	Glory* glory;
-
+	std::unique_ptr<Sisyphus> player;
 
 	SDL_Window* window;
 	SDL_Renderer* render;
 
-	const int windowHeight = 800, windowWidth = 700;
+	static const int windowHeight = 1080;
+	static const int windowWidth = 1920;
+	const char* fontPath = "FiraCode.TTF";
+	
 	const std::string title = "SisyphusPusher";
 	Uint32 flags = 0;
 	SDL_DisplayMode display;
@@ -29,8 +32,7 @@ private:
 	SDL_Color White = { 255, 255, 255 };
 
 public:
-	StrButton* button;
-
+	std::list<StrButton*> buttons = std::list<StrButton*>();
 	bool isPlaying = true;
 
 	int Init() {
@@ -52,18 +54,19 @@ public:
 			return 1;
 		}
 
-		sans = TTF_OpenFont("FiraCode.TTF", 30);
+		sans = TTF_OpenFont(fontPath, 30);
 
-		glory = new Glory();
-		button = new StrButton(100, 200, 3 * 96, 3 * 16,  "StrButton.png", "HoveringStrButton.png", glory, std::tuple<float, int>(1.0f, 3), std::tuple<float, int>(1.5f, 0));
+		player = std::make_unique<Sisyphus>();
+		buttons.push_back((new StrButton(100, 200, 3 * 96, 3 * 16, "StrButton.png", "HoveringStrButton.png", player.get(), std::tuple<float, int>(1.0f, 3), std::tuple<float, int>(1.5f, 0))));
 
 		return 0;
 	}
 
 
 	int Update() {
-		glory->Update();
-		button->Update();
+		player->Update();
+		for(StrButton* button : buttons)
+			button->Update();
 		return 0;
 	}
 
@@ -71,14 +74,19 @@ public:
 	int Draw() {
 		SDL_RenderClear(render);
 
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, glory->ToString().c_str(), White);
-		SDL_Texture* Message = SDL_CreateTextureFromSurface(render, surfaceMessage);
-		SDL_Rect textRect = { 0, 0, surfaceMessage->w, surfaceMessage->h };
-		SDL_RenderCopy(render, Message, NULL, &textRect);
-
-		button->Draw(render);
+		player->Draw(render);
+		for (StrButton* button : buttons)
+			button->Draw(render);
 
 		SDL_RenderPresent(render);
+		return 0;
+	}
+
+	int Exit() {
+		TTF_CloseFont(sans);
+		SDL_DestroyRenderer(render);
+		SDL_DestroyWindow(window);
+		SDL_Quit();
 		return 0;
 	}
 };

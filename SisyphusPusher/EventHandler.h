@@ -16,8 +16,9 @@ public:
 
 	int MousePress(SDL_MouseButtonEvent b) {
 		if (b.button == SDL_BUTTON_LEFT) {
-			for(StrButton* var : buttonList)
-				var->OnClick();
+			if (!buttonList.empty())
+				for(StrButton* var : buttonList)
+					var->OnClick();
 		}
 		return 0;
 	}

@@ -3,18 +3,20 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <tuple>
+#include <iostream>
 
 #include "Button.h";
 #include "Glory.h";
+#include "Sisyphus.h";
 
 class StrButton : Button
 {
 public:
-	StrButton(int x, int y, int width, int height, std::string buttonTexturePath, std::string hoverTexturePath, Glory* a_glory, std::tuple<float, int> a_cost, std::tuple<float, int> a_reward) : Button(x, y, width,height, buttonTexturePath, hoverTexturePath)
+	StrButton(int x, int y, int width, int height, std::string buttonTexturePath, std::string hoverTexturePath, Sisyphus* sisyphus, std::tuple<float, int> cost, std::tuple<float, int> reward) : Button(x, y, width,height, buttonTexturePath, hoverTexturePath)
 	{
-		glory = a_glory;
-		cost = a_cost;
-		reward = a_reward;
+		this->sisyphus = sisyphus;
+		this->cost = cost;
+		this->reward = reward;
 	}
 
 	int Draw(SDL_Renderer* renderer){
@@ -23,12 +25,17 @@ public:
 		
 		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(
 			TTF_OpenFont("FiraCode.TTF", 30), 
-			("cost: " + std::get<0>(string) + "." + std::get<0>(string) + " " + strEquivalent.at(std::get<1>(cost))).c_str(), 
+			("cost: " + std::get<0>(string) + "." + std::get<1>(string) + " " + strEquivalent.at(std::get<1>(cost))).c_str(), 
 			{255, 255, 255});
 
 		SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 		SDL_Rect textRect = { rect.x, rect.y, surfaceMessage->w, surfaceMessage->h };
 		SDL_RenderCopy(renderer, Message, NULL, &textRect);
+
+		SDL_DestroyTexture(Message);
+		SDL_FreeSurface(surfaceMessage);
+
+		TTF_CloseFont(TTF_OpenFont("FiraCode.TTF", 30));
 		return 0;
 	}
 
@@ -42,14 +49,15 @@ public:
 	int OnClick() {
 		if (!isHovering)
 			return 0;
-		if (glory->RemoveGlory(cost) < 0)
-			return 0;
+		if (sisyphus->glory->RemoveGlory(cost) < 0)
+			return -1;
 
-		glory->AddGps(std::get<0>(reward), std::get<1>(reward));
+		sisyphus->glory->AddGps(std::get<0>(reward), std::get<1>(reward));
+		return 0;
 	}
 
 private:
-	Glory* glory;
+	Sisyphus* sisyphus;
 	std::tuple<float, int> cost;
 	std::tuple<float, int> reward;
 	const std::map<int, std::string> strEquivalent = {

@@ -12,8 +12,7 @@ int main(int argc, char* args[]) {
     if (game->Init())
         return 1;
     
-    std::list<StrButton*> buttons = { game->button };
-    std::unique_ptr<EventHandler> eventHandler = std::unique_ptr<EventHandler>(new EventHandler(buttons));
+    std::unique_ptr<EventHandler> eventHandler = std::unique_ptr<EventHandler>(new EventHandler(game->buttons));
 
     SDL_Event e;
 
@@ -34,5 +33,6 @@ int main(int argc, char* args[]) {
         game->Update();
         game->Draw();
     }
+    game->Exit();
     return 0;
 }
