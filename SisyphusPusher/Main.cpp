@@ -14,7 +14,7 @@ int main(int argc, char* args[]) {
     if (game->Init())
         return 1;
     
-    std::unique_ptr<EventHandler> eventHandler = std::make_unique<EventHandler>(game->buttons, game->player.get());
+    std::unique_ptr<EventHandler> eventHandler = std::make_unique<EventHandler>(game->strButtons, game->stamButtons, game->player.get());
     std::map<SDL_Keycode, bool> keyMap;
     SDL_Event e;
     Uint32 frameStart;

@@ -152,6 +152,7 @@
     <ClInclude Include="LargeNumber.h" />
     <ClInclude Include="Sisyphus.h" />
     <ClInclude Include="Stamina.h" />
+    <ClInclude Include="StaminaButton.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="FiraCode.ttf" />

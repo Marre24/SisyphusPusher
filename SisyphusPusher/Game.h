@@ -12,6 +12,7 @@
 #include "EventHandler.h";
 #include "Sisyphus.h";
 #include "LargeNumber.h";
+#include "StaminaButton.h";
 
 
 class Game
@@ -19,13 +20,15 @@ class Game
 private:
 
 	SDL_Window* window;
-	SDL_Renderer* render;
+	SDL_Renderer* renderer;
 
 	static const int windowHeight = 1080;
 	static const int windowWidth = 1920;
 	const char* fontPath = "FiraCode.TTF";
 	
 	const std::string title = "SisyphusPusher";
+	const std::string btnPath = "StrButton.png";
+	const std::string hoveringBtnPath = "HoveringStrButton.png";
 	Uint32 flags = 0;
 	SDL_DisplayMode display;
 
@@ -34,7 +37,8 @@ private:
 
 public:
 	std::unique_ptr<Sisyphus> player = std::make_unique<Sisyphus>();
-	std::list<StrButton*> buttons = std::list<StrButton*>();
+	std::list<StrButton*> strButtons = std::list<StrButton*>();
+	std::list<StaminaButton*> stamButtons = std::list<StaminaButton*>();
 	bool isPlaying = true;
 
 	int Init() {
@@ -49,16 +53,17 @@ public:
 		int x = display.w / 2 - windowWidth / 2, y = display.h / 2 - windowHeight / 2;
 
 		window = SDL_CreateWindow(title.c_str(), x, y, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
-		render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-		if (window == NULL || render == NULL) {
+		if (window == NULL || renderer == NULL) {
 			throw std::exception("Game could not initialize");
 			return 1;
 		}
 
 		sans = TTF_OpenFont(fontPath, 30);
 
-		buttons.push_back((new StrButton(100, 200, 3 * 96, 3 * 16, "StrButton.png", "HoveringStrButton.png", player.get(), new LargeNumber(1, 0), new LargeNumber(1, 0))));
+		stamButtons.push_back(new StaminaButton(100, 400, 3 * 96, 3 * 16, btnPath, hoveringBtnPath, player.get(), new LargeNumber(1, 0), 0.1f));
+		strButtons.push_back((new StrButton(100, 200, 3 * 96, 3 * 16, btnPath, hoveringBtnPath, player.get(), new LargeNumber(1, 0), new LargeNumber(1, 0))));
 
 		return 0;
 	}
@@ -66,26 +71,30 @@ public:
 
 	int Update() {
 		player->Update();
-		for(StrButton* button : buttons)
+		for(StrButton* button : strButtons)
+			button->Update();
+		for (StaminaButton* button : stamButtons)
 			button->Update();
 		return 0;
 	}
 
 
 	int Draw() {
-		SDL_RenderClear(render);
+		SDL_RenderClear(renderer);
 
-		player->Draw(render);
-		for (StrButton* button : buttons)
-			button->Draw(render);
+		player->Draw(renderer);
+		for (StrButton* button : strButtons)
+			button->Draw(renderer);
+		for (StaminaButton* button : stamButtons)
+			button->Draw(renderer);
 
-		SDL_RenderPresent(render);
+		SDL_RenderPresent(renderer);
 		return 0;
 	}
 
 	int Exit() {
 		TTF_CloseFont(sans);
-		SDL_DestroyRenderer(render);
+		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(window);
 		SDL_Quit();
 		return 0;

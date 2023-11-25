@@ -15,7 +15,7 @@ public:
 
 	int Update(float timeSincePush) {
 		if (timeSincePush > 2000 && currentStamina < maxStamina)
-			currentStamina += refillSpeed;
+			currentStamina += recoverySpeed;
 		else if (timeSincePush > 2000 && currentStamina != maxStamina)
 			currentStamina = maxStamina;
 		stamRect->w = maxWidth * ProcentLeft();
@@ -30,6 +30,11 @@ public:
 		texture = SDL_CreateTextureFromSurface(renderer, border);
 		SDL_RenderCopy(renderer, texture, NULL, borderRect);
 		SDL_DestroyTexture(texture);
+		return 0;
+	}
+
+	int AddRecoverySpeed(float f) {
+		recoverySpeed += f;
 		return 0;
 	}
 
@@ -51,7 +56,7 @@ private:
 	const int maxWidth = 256;
 	const float maxStamina = 100;
 	float currentStamina = 50;
-	float refillSpeed = 0.1f;
+	float recoverySpeed = 0.1f;
 
 	float ProcentLeft() {
 		return currentStamina / maxStamina;

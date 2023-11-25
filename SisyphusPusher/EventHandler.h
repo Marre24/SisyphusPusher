@@ -4,27 +4,32 @@
 #include <list>
 
 #include "StrButton.h";
+#include "StaminaButton.h";
 #include "Sisyphus.h";
 
 class EventHandler
 {
 private:
-	std::list<StrButton*> &buttonList;
+	std::list<StrButton*> strButtonList;
+	std::list<StaminaButton*> stamButtonList;
 	std::map<SDL_Keycode, bool> lastFrameKeys;
 	bool first = true;
 	Sisyphus* player;
 
 public:
 
-	EventHandler(std::list<StrButton*> &buttonList, Sisyphus* player) : buttonList(buttonList) 
+	EventHandler(std::list<StrButton*> &strButtonList, std::list<StaminaButton*>& stamButtonList, Sisyphus* player) : strButtonList(strButtonList), stamButtonList(stamButtonList)
 	{ 
 		this->player = player;
 	}
 
 	int MousePress(SDL_MouseButtonEvent b) {
 		if (b.button == SDL_BUTTON_LEFT) {
-			if (!buttonList.empty())
-				for(StrButton* var : buttonList)
+			if (!strButtonList.empty())
+				for(StrButton* var : strButtonList)
+					var->OnClick();
+			if (!stamButtonList.empty())
+				for (StaminaButton* var : stamButtonList)
 					var->OnClick();
 		}
 		return 0;

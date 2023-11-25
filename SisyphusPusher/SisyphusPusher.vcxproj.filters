@@ -44,6 +44,9 @@
     <ClInclude Include="Stamina.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StaminaButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Font Include="FiraCode.ttf" />

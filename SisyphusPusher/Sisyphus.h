@@ -56,6 +56,11 @@ public:
 		return 0;
 	}
 
+	int IncreaseEndurance(float f) {
+		stamina->AddRecoverySpeed(f);
+		return 0;
+	}
+
 private:
 	float lastPushTime = 0;	//In ms
 };
