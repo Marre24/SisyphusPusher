@@ -6,6 +6,8 @@
 #include "EventHandler.h";
 #include "Game.h";
 
+const int FPS = 60;
+const int frameDelay = 1000 / FPS;
 
 int main(int argc, char* args[]) {
     std::unique_ptr<Game> game = std::make_unique<Game>();
@@ -15,9 +17,13 @@ int main(int argc, char* args[]) {
     std::unique_ptr<EventHandler> eventHandler = std::make_unique<EventHandler>(game->buttons, game->player.get());
     std::map<SDL_Keycode, bool> keyMap;
     SDL_Event e;
+    Uint32 frameStart;
+    int frameTime;
 
     while (game->isPlaying)
     {
+        frameStart = SDL_GetTicks();
+
         while (SDL_PollEvent(&e) != 0)          //Have events in que
         {
             switch (e.type) {
@@ -38,6 +44,10 @@ int main(int argc, char* args[]) {
         }
         game->Update();
         game->Draw();
+
+        frameTime = SDL_GetTicks() - frameStart;
+        if (frameDelay > frameTime)
+            SDL_Delay(frameDelay - frameTime);
     }
     game->Exit();
     return 0;

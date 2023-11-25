@@ -41,6 +41,9 @@
     <ClInclude Include="LargeNumber.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Stamina.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Font Include="FiraCode.ttf" />
