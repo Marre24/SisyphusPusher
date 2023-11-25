@@ -38,6 +38,9 @@
     <ClInclude Include="Sisyphus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LargeNumber.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Font Include="FiraCode.ttf" />

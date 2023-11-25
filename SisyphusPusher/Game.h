@@ -5,17 +5,18 @@
 #include <iostream>
 #include <SDL_ttf.h>
 #include <list>
+#include <memory.h>
 
 #include "Glory.h";
 #include "StrButton.h";
 #include "EventHandler.h";
 #include "Sisyphus.h";
+#include "LargeNumber.h";
 
 
 class Game
 {
 private:
-	std::unique_ptr<Sisyphus> player;
 
 	SDL_Window* window;
 	SDL_Renderer* render;
@@ -32,6 +33,7 @@ private:
 	SDL_Color White = { 255, 255, 255 };
 
 public:
+	std::unique_ptr<Sisyphus> player = std::make_unique<Sisyphus>();
 	std::list<StrButton*> buttons = std::list<StrButton*>();
 	bool isPlaying = true;
 
@@ -56,8 +58,7 @@ public:
 
 		sans = TTF_OpenFont(fontPath, 30);
 
-		player = std::make_unique<Sisyphus>();
-		buttons.push_back((new StrButton(100, 200, 3 * 96, 3 * 16, "StrButton.png", "HoveringStrButton.png", player.get(), std::tuple<float, int>(1.0f, 3), std::tuple<float, int>(1.5f, 0))));
+		buttons.push_back((new StrButton(100, 200, 3 * 96, 3 * 16, "StrButton.png", "HoveringStrButton.png", player.get(), new LargeNumber(1, 0), new LargeNumber(1, 0))));
 
 		return 0;
 	}

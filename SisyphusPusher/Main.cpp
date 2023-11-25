@@ -12,8 +12,8 @@ int main(int argc, char* args[]) {
     if (game->Init())
         return 1;
     
-    std::unique_ptr<EventHandler> eventHandler = std::unique_ptr<EventHandler>(new EventHandler(game->buttons));
-
+    std::unique_ptr<EventHandler> eventHandler = std::make_unique<EventHandler>(game->buttons, game->player.get());
+    std::map<SDL_Keycode, bool> keyMap;
     SDL_Event e;
 
     while (game->isPlaying)
@@ -27,8 +27,14 @@ int main(int argc, char* args[]) {
             case SDL_MOUSEBUTTONDOWN:
                 eventHandler->MousePress(e.button);
                 break;
-
+            case SDL_KEYDOWN:
+                keyMap[e.key.keysym.sym] = true;
+                break;
+            case SDL_KEYUP:
+                keyMap[e.key.keysym.sym] = false;
+                break;
             }
+            eventHandler->Update(keyMap);
         }
         game->Update();
         game->Draw();

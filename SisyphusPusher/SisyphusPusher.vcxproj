@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="LargeNumber.h" />
     <ClInclude Include="Sisyphus.h" />
   </ItemGroup>
   <ItemGroup>
