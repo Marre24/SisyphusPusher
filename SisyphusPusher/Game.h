@@ -12,7 +12,8 @@
 #include "EventHandler.h";
 #include "Sisyphus.h";
 #include "LargeNumber.h";
-#include "StaminaButton.h";
+#include "StaminaRefillButton.h";
+#include "StaminaExpandButton.h";
 
 
 class Game
@@ -38,7 +39,8 @@ private:
 public:
 	std::unique_ptr<Sisyphus> player = std::make_unique<Sisyphus>();
 	std::list<StrButton*> strButtons = std::list<StrButton*>();
-	std::list<StaminaButton*> stamButtons = std::list<StaminaButton*>();
+	std::list<StaminaRefillButton*> stamButtons = std::list<StaminaRefillButton*>();
+	std::list<StaminaExpandButton*> stamExpandButtons = std::list<StaminaExpandButton*>();
 	bool isPlaying = true;
 
 	int Init() {
@@ -62,8 +64,9 @@ public:
 
 		sans = TTF_OpenFont(fontPath, 30);
 
-		stamButtons.push_back(new StaminaButton(100, 400, 3 * 96, 3 * 16, btnPath, hoveringBtnPath, player.get(), new LargeNumber(1, 0), 0.1f));
 		strButtons.push_back((new StrButton(100, 200, 3 * 96, 3 * 16, btnPath, hoveringBtnPath, player.get(), new LargeNumber(1, 0), new LargeNumber(1, 0))));
+		stamButtons.push_back(new StaminaRefillButton(100, 300, 3 * 96, 3 * 16, btnPath, hoveringBtnPath, player.get(), new LargeNumber(1, 0), 0.1f));
+		stamExpandButtons.push_back(new StaminaExpandButton(100, 400, 3 * 96, 3 * 16, btnPath, hoveringBtnPath, player.get(), new LargeNumber(1, 0), 1));
 
 		return 0;
 	}
@@ -73,7 +76,9 @@ public:
 		player->Update();
 		for(StrButton* button : strButtons)
 			button->Update();
-		for (StaminaButton* button : stamButtons)
+		for (StaminaRefillButton* button : stamButtons)
+			button->Update();
+		for (StaminaExpandButton* button : stamExpandButtons)
 			button->Update();
 		return 0;
 	}
@@ -85,7 +90,9 @@ public:
 		player->Draw(renderer);
 		for (StrButton* button : strButtons)
 			button->Draw(renderer);
-		for (StaminaButton* button : stamButtons)
+		for (StaminaRefillButton* button : stamButtons)
+			button->Draw(renderer);
+		for (StaminaExpandButton* button : stamExpandButtons)
 			button->Draw(renderer);
 
 		SDL_RenderPresent(renderer);

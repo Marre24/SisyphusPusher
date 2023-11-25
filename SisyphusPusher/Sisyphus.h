@@ -15,8 +15,9 @@ public:
 	}
 
 	int Update() {
-		glory->Update();
 		heightClimed->Remove(new LargeNumber(1,0));
+		glory->Update();
+		heightClimed->Update();
 		stamina->Update(SDL_GetTicks() - lastPushTime);
 		return 0;
 	}
@@ -25,7 +26,14 @@ public:
 		glory->Draw(renderer);
 		stamina->Draw(renderer);
 
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont("FiraCode.TTF", 30), (heightClimed->ToString() + "m").c_str() , {255, 255, 255});
+		ShowMessage(renderer, strength->ToString() + "pwr", 100, 50);
+		ShowMessage(renderer, heightClimed->ToString(true) + "meter", 900, 0);
+
+		return 0;
+	}
+
+	int ShowMessage(SDL_Renderer* renderer, std::string string, int x, int y) {
+		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont("FiraCode.TTF", 30), string.c_str(), { 255, 255, 255 });
 		if (surfaceMessage == nullptr)
 			return -1;
 
@@ -34,12 +42,10 @@ public:
 			SDL_FreeSurface(surfaceMessage);
 			return -1;
 		}
-		SDL_Rect textRect = { 100, 100, surfaceMessage->w, surfaceMessage->h };
+		SDL_Rect textRect = { x, y, surfaceMessage->w, surfaceMessage->h };
 		SDL_RenderCopy(renderer, Message, NULL, &textRect);
 
 		TTF_CloseFont(TTF_OpenFont("FiraCode.TTF", 30));
-
-		return 0;
 	}
 
 	int Push() {
@@ -56,8 +62,13 @@ public:
 		return 0;
 	}
 
-	int IncreaseEndurance(float f) {
+	int IncreaseRecoverySpeed(float f) {
 		stamina->AddRecoverySpeed(f);
+		return 0;
+	}
+
+	int IncreaseStamina(float f) {
+		stamina->AddStamina(f);
 		return 0;
 	}
 

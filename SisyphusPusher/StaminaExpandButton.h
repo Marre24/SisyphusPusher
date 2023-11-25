@@ -9,10 +9,10 @@
 #include "Glory.h";
 #include "Sisyphus.h";
 
-class StaminaButton : Button
+class StaminaExpandButton : Button
 {
 public:
-	StaminaButton(int x, int y, int width, int height, std::string buttonTexturePath, std::string hoverTexturePath, Sisyphus* sisyphus, LargeNumber* cost, float staminaReward) : Button(x, y, width, height, buttonTexturePath, hoverTexturePath)
+	StaminaExpandButton(int x, int y, int width, int height, std::string buttonTexturePath, std::string hoverTexturePath, Sisyphus* sisyphus, LargeNumber* cost, float staminaReward) : Button(x, y, width, height, buttonTexturePath, hoverTexturePath)
 	{
 		this->staminaReward = staminaReward;
 		this->sisyphus = sisyphus;
@@ -21,10 +21,10 @@ public:
 
 	int Draw(SDL_Renderer* renderer) {
 		Button::Draw(renderer);
-
+		std::tuple<std::string, std::string> msg = LargeNumber::Round(staminaReward, 2);
 		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(
 			TTF_OpenFont("FiraCode.TTF", 30),
-			(cost->ToString()).c_str(),
+			("Cost: " + cost->ToString() + " Reward: +" + std::get<0>(msg) + "." + std::get<1>(msg) + " bar size").c_str(),
 			{ 255, 255, 255 });
 
 		SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
@@ -51,7 +51,7 @@ public:
 		if (sisyphus->glory->Pay(cost) < 0)
 			return -1;
 
-		sisyphus->IncreaseEndurance(staminaReward);
+		sisyphus->IncreaseStamina(staminaReward);
 		return 0;
 	}
 

@@ -35,7 +35,7 @@ public:
 			SDL_FreeSurface(surfaceMessage);
 			return -1;
 		}
-		SDL_Rect textRect = { 0, 0, surfaceMessage->w, surfaceMessage->h };
+		SDL_Rect textRect = { 500, 0, surfaceMessage->w, surfaceMessage->h };
 		SDL_RenderCopy(renderer, Message, NULL, &textRect);
 
 		TTF_CloseFont(TTF_OpenFont("FiraCode.TTF", 30));

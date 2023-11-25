@@ -18,7 +18,8 @@ public:
 			currentStamina += recoverySpeed;
 		else if (timeSincePush > 2000 && currentStamina != maxStamina)
 			currentStamina = maxStamina;
-		stamRect->w = maxWidth * ProcentLeft();
+		borderRect->w = startWidth * maxStamina / 100;
+		stamRect->w = (startWidth * maxStamina / 100) * ProcentLeft();
 		return 0;
 	}
 
@@ -30,11 +31,34 @@ public:
 		texture = SDL_CreateTextureFromSurface(renderer, border);
 		SDL_RenderCopy(renderer, texture, NULL, borderRect);
 		SDL_DestroyTexture(texture);
+		std::tuple<std::string, std::string> msg = LargeNumber::Round(recoverySpeed, 2);
+		ShowMessage(renderer, "Stamina recovery speed: " + std::get<0>(msg) + "." + std::get<1>(msg), 100, 150);
 		return 0;
+	}
+
+	int ShowMessage(SDL_Renderer* renderer, std::string string, int x, int y) {
+		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont("FiraCode.TTF", 30), string.c_str(), { 255, 255, 255 });
+		if (surfaceMessage == nullptr)
+			return -1;
+
+		SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+		if (Message == nullptr) {
+			SDL_FreeSurface(surfaceMessage);
+			return -1;
+		}
+		SDL_Rect textRect = { x, y, surfaceMessage->w, surfaceMessage->h };
+		SDL_RenderCopy(renderer, Message, NULL, &textRect);
+
+		TTF_CloseFont(TTF_OpenFont("FiraCode.TTF", 30));
 	}
 
 	int AddRecoverySpeed(float f) {
 		recoverySpeed += f;
+		return 0;
+	}
+
+	int AddStamina(float f) {
+		maxStamina += f;
 		return 0;
 	}
 
@@ -53,8 +77,8 @@ private:
 	SDL_Rect* borderRect = new SDL_Rect{ 500, 500, 256, 16 };
 	SDL_Rect* stamRect = new SDL_Rect{ 500, 500, 16, 16 };
 
-	const int maxWidth = 256;
-	const float maxStamina = 100;
+	const int startWidth = 256;
+	float maxStamina = 100;
 	float currentStamina = 50;
 	float recoverySpeed = 0.1f;
 
