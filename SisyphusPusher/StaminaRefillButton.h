@@ -21,20 +21,20 @@ public:
 
 	int Draw(SDL_Renderer* renderer) {
 		Button::Draw(renderer);
-		std::tuple<std::string, std::string> msg = LargeNumber::Round(staminaReward * 60, 2);
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(
-			TTF_OpenFont("FiraCode.TTF", 30),
-			("Cost: " + cost->ToString() + " Reward: " + std::get<0>(msg) + "." + std::get<1>(msg) + " stam/s").c_str(),
-			{ 255, 255, 255 });
+		SDL_Surface* surfaceMessage;
+		if (sisyphus->glory->IsGreaterThan(cost))
+			surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), cost->ToString().c_str(), { 0, 255, 0 });
+		else
+			surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), cost->ToString().c_str(), { 255, 0, 0 });
 
-		SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-		SDL_Rect textRect = { rect.x, rect.y, surfaceMessage->w, surfaceMessage->h };
-		SDL_RenderCopy(renderer, Message, NULL, &textRect);
+		SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+		SDL_Rect textRect = { rect.x + 50, rect.y, surfaceMessage->w, surfaceMessage->h };
+		SDL_RenderCopy(renderer, message, NULL, &textRect);
 
-		SDL_DestroyTexture(Message);
+		SDL_DestroyTexture(message);
 		SDL_FreeSurface(surfaceMessage);
 
-		TTF_CloseFont(TTF_OpenFont("FiraCode.TTF", 30));
+		TTF_CloseFont(TTF_OpenFont(fontPath, 30));
 		return 0;
 	}
 
@@ -59,14 +59,6 @@ private:
 	Sisyphus* sisyphus;
 	LargeNumber* cost;
 	float staminaReward;
-	const std::map<int, std::string> strEquivalent = {
-		{0, ""},
-		{3, " Thousand"},
-		{6, " Million"},
-		{9, " Billion"},
-		{12, " Trillion"},
-		{15, " Quadrillion"},
-		{18, " Quintillion"},
-	};
+	const char* fontPath = "FieldGuide.TTF";
 };
 

@@ -51,7 +51,4 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <Font Include="FiraCode.ttf" />
-  </ItemGroup>
 </Project>

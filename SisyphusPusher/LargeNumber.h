@@ -14,13 +14,13 @@ public:
 	}
 
 	int Update() {
-		if (Value() >= pow(10, expInterval))
+		if (Value() >= pow(10, expInterval + 2))
 		{
 			std::get<1>(number) += expInterval;
 			std::get<0>(number) /= pow(10, expInterval);
 		}
 
-		if (Value() < 1 && Exponent() >= expInterval)
+		if (Value() < 10 && Exponent() >= expInterval)
 		{
 			std::get<1>(number) -= expInterval;
 			std::get<0>(number) *= pow(10, expInterval);
@@ -49,14 +49,43 @@ public:
 	}
 
 	int Remove(LargeNumber* num) {
-		float value = num->Value();
-		int exp = num->Exponent();
+		int interger = (int)num->Value();
+		int count = 0;
+		while (interger != 0) {
+			interger = interger / 10;
+			count++;
+		}
+		int intergerTwo = (int)Value();
+		int countTwo = 0;
+		while (intergerTwo != 0) {
+			intergerTwo = intergerTwo / 10;
+			countTwo++;
+		}
 
-		if (exp > Exponent() || (exp == Exponent() && value > Value()))
+		if (num->Exponent() + count > Exponent() + countTwo || num->Value() > Value())
 			return -1;
 
-		std::get<0>(number) -= value * (float)pow(0.1, Exponent() - exp);
+		std::get<0>(number) -= num->Value() * (float)pow(0.1, Exponent() - num->Exponent());
 		return 0;
+	}
+
+	bool LargerThan(LargeNumber* num) {
+		int interger = (int)num->Value();
+		int count = 0;
+		while (interger != 0) {
+			interger = interger / 10;
+			count++;
+		}
+		int intergerTwo = (int)Value();
+		int countTwo = 0;
+		while (intergerTwo != 0) {
+			intergerTwo = intergerTwo / 10;
+			countTwo++;
+		}
+
+		if (num->Exponent() + count > Exponent() + countTwo || num->Value() > Value())
+			return false;
+		return true;
 	}
 
 	std::string ToString() {

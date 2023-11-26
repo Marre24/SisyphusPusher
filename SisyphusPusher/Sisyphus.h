@@ -26,14 +26,12 @@ public:
 		glory->Draw(renderer);
 		stamina->Draw(renderer);
 
-		ShowMessage(renderer, strength->ToString() + "pwr", 100, 50);
-		ShowMessage(renderer, heightClimed->ToString(true) + "meter", 900, 0);
-
+		ShowMessage(renderer, heightClimed->ToString(true) + "meter (" + strength->ToString() + "m/click)", 450, 100);
 		return 0;
 	}
 
 	int ShowMessage(SDL_Renderer* renderer, std::string string, int x, int y) {
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont("FiraCode.TTF", 30), string.c_str(), { 255, 255, 255 });
+		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), string.c_str(), { 255, 255, 255 });
 		if (surfaceMessage == nullptr)
 			return -1;
 
@@ -42,10 +40,10 @@ public:
 			SDL_FreeSurface(surfaceMessage);
 			return -1;
 		}
-		SDL_Rect textRect = { x, y, surfaceMessage->w, surfaceMessage->h };
+		SDL_Rect textRect = { x - surfaceMessage->w / 2, y, surfaceMessage->w, surfaceMessage->h };
 		SDL_RenderCopy(renderer, Message, NULL, &textRect);
 
-		TTF_CloseFont(TTF_OpenFont("FiraCode.TTF", 30));
+		TTF_CloseFont(TTF_OpenFont(fontPath, 30));
 	}
 
 	int Push() {
@@ -74,4 +72,5 @@ public:
 
 private:
 	float lastPushTime = 0;	//In ms
+	const char* fontPath = "FieldGuide.TTF";
 };

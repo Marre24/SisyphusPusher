@@ -23,18 +23,22 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
-	static const int windowHeight = 1080;
-	static const int windowWidth = 1920;
-	const char* fontPath = "FiraCode.TTF";
+	int windowHeight;
+	int windowWidth;
 	
 	const std::string title = "SisyphusPusher";
-	const std::string btnPath = "StrButton.png";
-	const std::string hoveringBtnPath = "HoveringStrButton.png";
+	const std::string btnUpPath = "ButtonUp.png";
+	const std::string btnDownPath = "ButtonDown.png";
 	Uint32 flags = 0;
 	SDL_DisplayMode display;
 
 	TTF_Font* sans = NULL;
 	SDL_Color White = { 255, 255, 255 };
+
+	SDL_Surface* tartarus;
+	SDL_Surface* buttonWindow;
+	SDL_Rect* buttonWindowRect = new SDL_Rect{ 1024, 28, 896, 1024 };
+	SDL_Rect* tartarusWindow = new SDL_Rect{ 0, 28, 1024, 1024 };
 
 public:
 	std::unique_ptr<Sisyphus> player = std::make_unique<Sisyphus>();
@@ -56,17 +60,33 @@ public:
 
 		window = SDL_CreateWindow(title.c_str(), x, y, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		windowWidth = SDL_GetWindowSurface(window)->w; 
+		windowHeight = SDL_GetWindowSurface(window)->h;
 
 		if (window == NULL || renderer == NULL) {
 			throw std::exception("Game could not initialize");
 			return 1;
 		}
 
-		sans = TTF_OpenFont(fontPath, 30);
+		tartarus = IMG_Load("Tartarus.png");
+		buttonWindow = IMG_Load("ButtonWindow.png");
 
-		strButtons.push_back((new StrButton(100, 200, 3 * 96, 3 * 16, btnPath, hoveringBtnPath, player.get(), new LargeNumber(1, 0), new LargeNumber(1, 0))));
-		stamButtons.push_back(new StaminaRefillButton(100, 300, 3 * 96, 3 * 16, btnPath, hoveringBtnPath, player.get(), new LargeNumber(1, 0), 0.1f));
-		stamExpandButtons.push_back(new StaminaExpandButton(100, 400, 3 * 96, 3 * 16, btnPath, hoveringBtnPath, player.get(), new LargeNumber(1, 0), 1));
+		for (int i = 0; i < 5; i++)
+		{
+			strButtons.push_back((new StrButton(64 + 1024, 264 + 160 * i, 224, 96, 
+				btnUpPath, btnDownPath, 
+				player.get(), 
+				new LargeNumber(1, 0), new LargeNumber(1, 0))));
+			stamButtons.push_back(new StaminaRefillButton(64 + 1024 + 272, 264 + 160 * i, 224, 96,
+				btnUpPath, btnDownPath, 
+				player.get(), 
+				new LargeNumber(1, 0), 0.1f));
+			stamExpandButtons.push_back(new StaminaExpandButton(64 + 1024 + 544, 264 + 160 * i, 224, 96, 
+				btnUpPath, btnDownPath, 
+				player.get(), 
+				new LargeNumber(1, 0), 1));
+		}
 
 		return 0;
 	}
@@ -87,6 +107,9 @@ public:
 	int Draw() {
 		SDL_RenderClear(renderer);
 
+		Draw(SDL_CreateTextureFromSurface(renderer, buttonWindow), buttonWindowRect);
+		Draw(SDL_CreateTextureFromSurface(renderer, tartarus), tartarusWindow);
+
 		player->Draw(renderer);
 		for (StrButton* button : strButtons)
 			button->Draw(renderer);
@@ -99,8 +122,13 @@ public:
 		return 0;
 	}
 
+	int Draw(SDL_Texture* texture, SDL_Rect* rect) {
+		SDL_RenderCopy(renderer, texture, NULL, rect);
+		SDL_DestroyTexture(texture);
+		return 0;
+	}
+
 	int Exit() {
-		TTF_CloseFont(sans);
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(window);
 		SDL_Quit();

@@ -26,7 +26,7 @@ public:
 	}
 
 	int Draw(SDL_Renderer* renderer) {
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont("FiraCode.TTF", 30), ToString().c_str(), { 255, 255, 255 });
+		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), ToString().c_str(), { 255, 255, 255 });
 		if (surfaceMessage == nullptr) 
 			return -1;
 
@@ -35,10 +35,10 @@ public:
 			SDL_FreeSurface(surfaceMessage);
 			return -1;
 		}
-		SDL_Rect textRect = { 500, 0, surfaceMessage->w, surfaceMessage->h };
+		SDL_Rect textRect = { 1400, 80, surfaceMessage->w, surfaceMessage->h };
 		SDL_RenderCopy(renderer, Message, NULL, &textRect);
 
-		TTF_CloseFont(TTF_OpenFont("FiraCode.TTF", 30));
+		TTF_CloseFont(TTF_OpenFont(fontPath, 30));
 		return 0;
 	}
 
@@ -50,7 +50,12 @@ public:
 		return glory->Add(price);
 	}
 
+	bool IsGreaterThan(LargeNumber* num) {
+		return glory->LargerThan(num);
+	}
+
 private:
 	std::unique_ptr<LargeNumber> glory = std::make_unique<LargeNumber>(0, 0);
 	const int expInterval = 3;
+	const char* fontPath = "FieldGuide.TTF";
 };
