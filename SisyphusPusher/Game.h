@@ -37,10 +37,10 @@ private:
 
 	SDL_Surface* tartarus;
 	SDL_Surface* buttonWindow;
-	SDL_Rect* buttonWindowRect = new SDL_Rect{ 1024, 28, 896, 1024 };
-	SDL_Rect* tartarusWindow = new SDL_Rect{ 0, 28, 1024, 1024 };
 
 public:
+	const SDL_Rect* buttonWindowRect = new SDL_Rect{ 1024, 28, 896, 1024 };
+	const SDL_Rect* tartarusWindow = new SDL_Rect{ 0, 28, 1024, 1024 };
 	std::unique_ptr<Sisyphus> player = std::make_unique<Sisyphus>();
 	std::list<StrButton*> strButtons = std::list<StrButton*>();
 	std::list<StaminaRefillButton*> stamButtons = std::list<StaminaRefillButton*>();
@@ -122,7 +122,7 @@ public:
 		return 0;
 	}
 
-	int Draw(SDL_Texture* texture, SDL_Rect* rect) {
+	int Draw(SDL_Texture* texture, const SDL_Rect* rect) {
 		SDL_RenderCopy(renderer, texture, NULL, rect);
 		SDL_DestroyTexture(texture);
 		return 0;

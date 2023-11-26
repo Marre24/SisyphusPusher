@@ -17,12 +17,14 @@ private:
 	std::map<SDL_Keycode, bool> lastFrameKeys;
 	bool first = true;
 	Sisyphus* player;
+	const SDL_Rect* window;
 
 public:
 
-	EventHandler(std::list<StrButton*> &strButtonList, std::list<StaminaRefillButton*>& stamButtonList, std::list<StaminaExpandButton*>& stamExpandButtonList, Sisyphus* player) : strButtonList(strButtonList), stamButtonList(stamButtonList), stamExpandButtonList(stamExpandButtonList)
+	EventHandler(std::list<StrButton*> &strButtonList, std::list<StaminaRefillButton*>& stamButtonList, std::list<StaminaExpandButton*>& stamExpandButtonList, Sisyphus* player, const SDL_Rect* window) : strButtonList(strButtonList), stamButtonList(stamButtonList), stamExpandButtonList(stamExpandButtonList)
 	{ 
 		this->player = player;
+		this->window = window;
 	}
 
 	int MousePress(SDL_MouseButtonEvent b) {
@@ -36,6 +38,10 @@ public:
 			if (!stamExpandButtonList.empty())
 				for (StaminaExpandButton* var : stamExpandButtonList)
 					var->OnClick();
+			SDL_Point mouse = { 0,0 };
+			SDL_GetMouseState(&mouse.x, &mouse.y);
+			if (SDL_PointInRect(&mouse, window))
+				player->Push();
 		}
 		return 0;
 	}
