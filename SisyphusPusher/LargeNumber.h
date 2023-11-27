@@ -14,7 +14,7 @@ public:
 	}
 
 	int Update() {
-		if (Value() >= pow(10, expInterval + 2))
+		if (Value() >= pow(10, expInterval + 1))
 		{
 			std::get<1>(number) += expInterval;
 			std::get<0>(number) /= pow(10, expInterval);
@@ -40,7 +40,7 @@ public:
 
 		if (exp > Exponent())
 		{
-			std::get<0>(number) += (exp - Exponent()) * 10 * value;
+			std::get<0>(number) += pow(10,exp - Exponent()) * value;
 			return 0;
 		}
 
@@ -62,7 +62,7 @@ public:
 			countTwo++;
 		}
 
-		if (num->Exponent() + count > Exponent() + countTwo || num->Value() > Value())
+		if (num->LargerThan(this))
 			return -1;
 
 		std::get<0>(number) -= num->Value() * (float)pow(0.1, Exponent() - num->Exponent());
@@ -82,10 +82,9 @@ public:
 			intergerTwo = intergerTwo / 10;
 			countTwo++;
 		}
-
-		if (num->Exponent() + count > Exponent() + countTwo || num->Value() > Value())
+		if (num->Exponent() + count > this->Exponent() + countTwo)
 			return false;
-		return true;
+		return num->Exponent() + count < this->Exponent() + countTwo || num->Value() < Value();
 	}
 
 	std::string ToString() {
@@ -106,6 +105,11 @@ public:
 		if (decimal < 10)
 			return std::tuple<std::string, std::string> { std::to_string(wholeNum), std::to_string(decimal) + "0"};
 		return std::tuple<std::string, std::string> { std::to_string(wholeNum), std::to_string(decimal)};
+	}
+
+	int Times(float f) {
+		std::get<0>(number) = Value() * f;
+		return 0;
 	}
 
 private:

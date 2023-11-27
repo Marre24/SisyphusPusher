@@ -71,26 +71,62 @@ public:
 
 		tartarus = IMG_Load("Tartarus.png");
 		buttonWindow = IMG_Load("ButtonWindow.png");
-
-		for (int i = 0; i < 5; i++)
-		{
-			strButtons.push_back((new StrButton(64 + 1024, 264 + 160 * i, 224, 96, 
-				btnUpPath, btnDownPath, 
-				player.get(), 
-				new LargeNumber(1, 0), new LargeNumber(1, 0))));
-			stamButtons.push_back(new StaminaRefillButton(64 + 1024 + 272, 264 + 160 * i, 224, 96,
-				btnUpPath, btnDownPath, 
-				player.get(), 
-				new LargeNumber(1, 0), 0.1f));
-			stamExpandButtons.push_back(new StaminaExpandButton(64 + 1024 + 544, 264 + 160 * i, 224, 96, 
-				btnUpPath, btnDownPath, 
-				player.get(), 
-				new LargeNumber(1, 0), 1));
-		}
+		int id = 0;
+		//Row 1
+		strButtons.push_back(new StrButton(1344, 192 + 40,
+			btnUpPath, btnDownPath,
+			player.get(),
+			new LargeNumber(4, 0), new LargeNumber(1.6 / cps, 0), 1.07f, ++id));
+		strButtons.push_back(new StrButton(1344, 320 + 40,
+			btnUpPath, btnDownPath,
+			player.get(),
+			new LargeNumber(60, 0), new LargeNumber(20 / cps, 0), 1.15f, ++id));
+		strButtons.push_back(new StrButton(1344, 448 + 40,
+			btnUpPath, btnDownPath,
+			player.get(),
+			new LargeNumber(720, 0), new LargeNumber(90 / cps, 0), 1.14f, ++id));
+		strButtons.push_back(new StrButton(1344, 576 + 40,
+			btnUpPath, btnDownPath,
+			player.get(),
+			new LargeNumber(8640, 0), new LargeNumber(360 / cps, 0), 1.13f, ++id));
+		strButtons.push_back(new StrButton(1344, 704 + 40,
+			btnUpPath, btnDownPath,
+			player.get(),
+			new LargeNumber(103, 3), new LargeNumber(2160.0 / cps, 0), 1.12f, ++id));
+		//Row 2
+		strButtons.push_back(new StrButton(1632, 192 + 40,
+			btnUpPath, btnDownPath,
+			player.get(),
+			new LargeNumber(1244, 3), new LargeNumber(6480.0 / cps, 0), 1.11f, ++id));
+		strButtons.push_back(new StrButton(1632, 320 + 40,
+			btnUpPath, btnDownPath,
+			player.get(),
+			new LargeNumber(14.929920f, 6), new LargeNumber(19440 / cps, 0), 1.10f, ++id));
+		strButtons.push_back(new StrButton(1632, 448 + 40,
+			btnUpPath, btnDownPath,
+			player.get(),
+			new LargeNumber(179.159040f, 6), new LargeNumber(58320 / cps, 0), 1.09f, ++id));
+		strButtons.push_back(new StrButton(1632, 576 + 40,
+			btnUpPath, btnDownPath,
+			player.get(),
+			new LargeNumber(2.149908480f, 9), new LargeNumber(174960 / cps, 0), 1.08f, ++id));
+		strButtons.push_back(new StrButton(1632, 704 + 40,
+			btnUpPath, btnDownPath,
+			player.get(),
+			new LargeNumber(25.798901760f, 9), new LargeNumber(804816 / cps, 0), 1.07f, ++id));
+		//Stamina buttons
+		stamButtons.push_back(new StaminaRefillButton(1632, 896 + 40,
+			btnUpPath, btnDownPath, 
+			player.get(), 
+			new LargeNumber(10, 0), 0.2f, 2.0f));
+		stamExpandButtons.push_back(new StaminaExpandButton(1344, 896 + 40,
+			btnUpPath, btnDownPath, 
+			player.get(), 
+			new LargeNumber(1, 0), 10, 10.0f));
 
 		return 0;
 	}
-
+	const float cps = 10;
 
 	int Update() {
 		player->Update();

@@ -9,7 +9,8 @@ public:
 	std::unique_ptr<Glory> glory = std::make_unique<Glory>();
 	std::unique_ptr<Stamina> stamina = std::make_unique<Stamina>();
 	std::unique_ptr<LargeNumber> heightClimed = std::make_unique<LargeNumber>(0,0);
-	std::unique_ptr<LargeNumber> strength = std::make_unique<LargeNumber>(1,0);
+	std::unique_ptr<LargeNumber> strength = std::make_unique<LargeNumber>(0.3f,0);
+	std::map<int, LargeNumber*> dividedStrength = { };
 
 	Sisyphus() {
 	}
@@ -18,6 +19,7 @@ public:
 		heightClimed->Remove(new LargeNumber(1,0));
 		glory->Update();
 		heightClimed->Update();
+		strength->Update();
 		stamina->Update(SDL_GetTicks() - lastPushTime);
 		return 0;
 	}
@@ -26,7 +28,7 @@ public:
 		glory->Draw(renderer);
 		stamina->Draw(renderer);
 
-		ShowMessage(renderer, heightClimed->ToString(true) + "meter (" + strength->ToString() + "m/click)", 450, 100);
+		ShowMessage(renderer, heightClimed->ToString(true) + "meter (" + strength->ToString(true) + "meter/click)", 450, 100);
 		return 0;
 	}
 
@@ -55,9 +57,27 @@ public:
 		return 0;
 	}
 
-	int Strengthen(LargeNumber* extra) {
-		strength->Add(extra);
+	int GoalReached(int id, float multiplyer) {
+		if (!dividedStrength.contains(id))
+			return -1;
+		dividedStrength[id]->Times(multiplyer);
+		strength = std::make_unique<LargeNumber>(StrengthSum());
 		return 0;
+	}
+
+	int Strengthen(LargeNumber* extra, int id) {
+		if (!dividedStrength.contains(id))
+			dividedStrength.insert({ id, new LargeNumber(0,0) });
+		dividedStrength[id]->Add(extra);
+		strength = std::make_unique<LargeNumber>(StrengthSum());
+		return 0;
+	}
+
+	LargeNumber StrengthSum() {
+		LargeNumber sum = LargeNumber(0,0);
+		for(const auto& kv : dividedStrength)
+			sum.Add(kv.second);
+		return sum;
 	}
 
 	int IncreaseRecoverySpeed(float f) {

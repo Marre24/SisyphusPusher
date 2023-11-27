@@ -14,9 +14,9 @@ public:
 	}
 
 	int Update(float timeSincePush) {
-		if (timeSincePush > 2000 && currentStamina < maxStamina)
+		if (timeSincePush > millisecondsToRefill && currentStamina < maxStamina)
 			currentStamina += recoverySpeed;
-		else if (timeSincePush > 2000 && currentStamina != maxStamina)
+		else if (timeSincePush > millisecondsToRefill && currentStamina != maxStamina)
 			currentStamina = maxStamina;
 		borderRect->w = startWidth * maxStamina / 100;
 		stamRect->w = (startWidth * maxStamina / 100) * ProcentLeft();
@@ -68,7 +68,7 @@ public:
 	}
 
 private:
-
+	const int millisecondsToRefill = 200;
 	SDL_Surface* border;
 	SDL_Surface* greenColor;
 	const std::string borderTexturePath = "StaminaBar.png";
@@ -79,7 +79,7 @@ private:
 
 	const int startWidth = 256;
 	float maxStamina = 100;
-	float currentStamina = 50;
+	float currentStamina = 100;
 	float recoverySpeed = 0.1f;
 
 	float ProcentLeft() {

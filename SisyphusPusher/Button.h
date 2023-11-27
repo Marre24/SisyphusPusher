@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <string>
 #include <SDL_image.h>
+#include "LargeNumber.h"
 
 class Button
 {
@@ -11,11 +12,15 @@ protected:
 	SDL_Rect rect = { 0, 0, 0, 0};
 	SDL_Surface* btn;
 	SDL_Surface* btnHover;
+	LargeNumber* cost;
+	float coefficient;
 
 public:
 	
-	Button(int x, int y, int width, int height, std::string buttonTexturePath, std::string hoverTexturePath) {
-		rect = { x, y, width, height};
+	Button(int x, int y, std::string buttonTexturePath, std::string hoverTexturePath, LargeNumber* cost, float coefficient) {
+		this->cost = cost;
+		this->coefficient = coefficient;
+		rect = { x, y, 224, 64};
 		btn = IMG_Load(buttonTexturePath.c_str());
 		btnHover = IMG_Load(hoverTexturePath.c_str());
 	}
@@ -24,7 +29,7 @@ public:
 		SDL_Point mouse = { 0,0 };
 		SDL_GetMouseState(&mouse.x, &mouse.y);
 		isHovering = SDL_PointInRect(&mouse, &rect);
-
+		cost->Update();
 		return 0;
 	}
 

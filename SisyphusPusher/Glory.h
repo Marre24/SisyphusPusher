@@ -55,7 +55,7 @@ public:
 	}
 
 private:
-	std::unique_ptr<LargeNumber> glory = std::make_unique<LargeNumber>(0, 0);
+	std::unique_ptr<LargeNumber> glory = std::make_unique<LargeNumber>(1, 15);
 	const int expInterval = 3;
 	const char* fontPath = "FieldGuide.TTF";
 };
