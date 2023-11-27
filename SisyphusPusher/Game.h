@@ -14,6 +14,7 @@
 #include "LargeNumber.h";
 #include "StaminaRefillButton.h";
 #include "StaminaExpandButton.h";
+#include "BuyAmountButton.h"
 
 
 class Game
@@ -43,8 +44,10 @@ public:
 	const SDL_Rect* tartarusWindow = new SDL_Rect{ 0, 28, 1024, 1024 };
 	std::unique_ptr<Sisyphus> player = std::make_unique<Sisyphus>();
 	std::list<StrButton*> strButtons = std::list<StrButton*>();
-	std::list<StaminaRefillButton*> stamButtons = std::list<StaminaRefillButton*>();
-	std::list<StaminaExpandButton*> stamExpandButtons = std::list<StaminaExpandButton*>();
+	StaminaRefillButton* stamButton;
+	StaminaExpandButton* stamExpandButton;
+	BuyAmountButton* buyAmountButton;
+
 	bool isPlaying = true;
 
 	int Init() {
@@ -115,27 +118,28 @@ public:
 			player.get(),
 			new LargeNumber(25.798901760f, 9), new LargeNumber(804816 / cps, 0), 1.07f, ++id));
 		//Stamina buttons
-		stamButtons.push_back(new StaminaRefillButton(1632, 896 + 40,
+		stamButton = new StaminaRefillButton(1632, 896 + 40,
 			btnUpPath, btnDownPath, 
 			player.get(), 
-			new LargeNumber(10, 0), 0.2f, 2.0f));
-		stamExpandButtons.push_back(new StaminaExpandButton(1344, 896 + 40,
+			new LargeNumber(10, 0), 0.2f, 2.0f);
+		stamExpandButton = new StaminaExpandButton(1344, 896 + 40,
 			btnUpPath, btnDownPath, 
 			player.get(), 
-			new LargeNumber(1, 0), 10, 10.0f));
+			new LargeNumber(1, 0), 10, 10.0f);
+		//BuyButton
+		buyAmountButton = new BuyAmountButton(1024 + 32, 256 + 40, btnUpPath, btnDownPath, player.get());
 
 		return 0;
 	}
-	const float cps = 10;
+	const float cps = 8;
 
 	int Update() {
 		player->Update();
 		for(StrButton* button : strButtons)
 			button->Update();
-		for (StaminaRefillButton* button : stamButtons)
-			button->Update();
-		for (StaminaExpandButton* button : stamExpandButtons)
-			button->Update();
+		stamButton->Update();
+		stamExpandButton->Update();
+		buyAmountButton->Update();
 		return 0;
 	}
 
@@ -149,10 +153,9 @@ public:
 		player->Draw(renderer);
 		for (StrButton* button : strButtons)
 			button->Draw(renderer);
-		for (StaminaRefillButton* button : stamButtons)
-			button->Draw(renderer);
-		for (StaminaExpandButton* button : stamExpandButtons)
-			button->Draw(renderer);
+		stamButton->Draw(renderer);
+		stamExpandButton->Draw(renderer);
+		buyAmountButton->Draw(renderer);
 
 		SDL_RenderPresent(renderer);
 		return 0;

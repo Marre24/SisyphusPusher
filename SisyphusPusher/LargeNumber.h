@@ -14,18 +14,17 @@ public:
 	}
 
 	int Update() {
-		if (Value() >= pow(10, expInterval + 1))
+		while (Value() >= pow(10, expInterval + 1))
 		{
 			std::get<1>(number) += expInterval;
 			std::get<0>(number) /= pow(10, expInterval);
 		}
 
-		if (Value() < 10 && Exponent() >= expInterval)
+		while (Value() < 10 && Exponent() >= expInterval)
 		{
 			std::get<1>(number) -= expInterval;
 			std::get<0>(number) *= pow(10, expInterval);
 		}
-
 		return 0;
 	}
 
@@ -40,7 +39,7 @@ public:
 
 		if (exp > Exponent())
 		{
-			std::get<0>(number) += pow(10,exp - Exponent()) * value;
+			std::get<0>(number) += pow(10, exp - Exponent()) * value;
 			return 0;
 		}
 
@@ -97,6 +96,10 @@ public:
 		return std::get<0>(str) + "." + std::get<1>(str) + prefixEquivalent.at(std::get<1>(number));
 	}
 
+	float ToFloat() {
+		return pow(Value(), Exponent());
+	}
+
 	static std::tuple<std::string, std::string> Round(float var, int decimals)
 	{
 		float value = (int)(var * pow(10, decimals) + .5);
@@ -112,6 +115,16 @@ public:
 		return 0;
 	}
 
+	LargeNumber* Times(float f, bool savesNumber) {
+		return new LargeNumber(Value() * f, Exponent());
+	}
+
+	LargeNumber* DividedBy(LargeNumber* lNum) {
+		if (lNum->Exponent() == 0)
+			return new LargeNumber(pow(lNum->Value(), 1), this->Exponent() - lNum->Exponent());
+		return new LargeNumber(pow(lNum->Value(), lNum->Exponent()), this->Exponent() - lNum->Exponent());
+	}
+
 private:
 	const int expInterval = 3;
 	const std::map<int, std::string> strEquivalent = {
@@ -122,6 +135,10 @@ private:
 		{12, " Trillion"},
 		{15, " Quadrillion"},
 		{18, " Quintillion"},
+		{21, " Sextillion"},
+		{24, " Septillion"},
+		{27, " Octillion"},
+		{30, " Nonillion"},
 	};
 	const std::map<int, std::string> prefixEquivalent = {
 		{0, ""},
@@ -135,5 +152,5 @@ private:
 	std::tuple<float, int> number = std::tuple<float, int>();
 
 
-	
+
 };

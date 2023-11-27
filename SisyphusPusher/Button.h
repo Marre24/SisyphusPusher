@@ -13,13 +13,18 @@ protected:
 	SDL_Surface* btn;
 	SDL_Surface* btnHover;
 	LargeNumber* cost;
+	LargeNumber* baseCost;
 	float coefficient;
 
 public:
 	
-	Button(int x, int y, std::string buttonTexturePath, std::string hoverTexturePath, LargeNumber* cost, float coefficient) {
-		this->cost = cost;
-		this->coefficient = coefficient;
+	Button(int x, int y, std::string buttonTexturePath, std::string hoverTexturePath, LargeNumber* baseCost, float coefficient) {
+		if (baseCost != nullptr)
+		{
+			this->cost = baseCost;
+			this->baseCost = new LargeNumber(baseCost->Value(), baseCost->Exponent());
+			this->coefficient = coefficient;
+		}
 		rect = { x, y, 224, 64};
 		btn = IMG_Load(buttonTexturePath.c_str());
 		btnHover = IMG_Load(hoverTexturePath.c_str());
@@ -29,7 +34,8 @@ public:
 		SDL_Point mouse = { 0,0 };
 		SDL_GetMouseState(&mouse.x, &mouse.y);
 		isHovering = SDL_PointInRect(&mouse, &rect);
-		cost->Update();
+		if (baseCost != nullptr)
+			cost->Update();
 		return 0;
 	}
 

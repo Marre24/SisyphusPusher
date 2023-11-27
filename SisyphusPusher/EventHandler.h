@@ -7,13 +7,15 @@
 #include "StaminaRefillButton.h";
 #include "StaminaExpandButton.h";
 #include "Sisyphus.h";
+#include "BuyAmountButton.h"
 
 class EventHandler
 {
 private:
 	std::list<StrButton*> strButtonList;
-	std::list<StaminaRefillButton*> stamButtonList;
-	std::list<StaminaExpandButton*> stamExpandButtonList;
+	StaminaRefillButton* stamButton;
+	StaminaExpandButton* stamExpandButton;
+	BuyAmountButton* buyAmountButton;
 	std::map<SDL_Keycode, bool> lastFrameKeys;
 	bool first = true;
 	Sisyphus* player;
@@ -21,8 +23,11 @@ private:
 
 public:
 
-	EventHandler(std::list<StrButton*> &strButtonList, std::list<StaminaRefillButton*>& stamButtonList, std::list<StaminaExpandButton*>& stamExpandButtonList, Sisyphus* player, const SDL_Rect* window) : strButtonList(strButtonList), stamButtonList(stamButtonList), stamExpandButtonList(stamExpandButtonList)
+	EventHandler(std::list<StrButton*> &strButtonList, StaminaRefillButton* stamButton, StaminaExpandButton* stamExpandButton, BuyAmountButton* buyAmountButton, Sisyphus* player, const SDL_Rect* window) : strButtonList(strButtonList)
 	{ 
+		this->buyAmountButton = buyAmountButton;
+		this->stamButton = stamButton;
+		this->stamExpandButton = stamExpandButton;
 		this->player = player;
 		this->window = window;
 	}
@@ -32,12 +37,9 @@ public:
 			if (!strButtonList.empty())
 				for(StrButton* var : strButtonList)
 					var->OnClick();
-			if (!stamButtonList.empty())
-				for (StaminaRefillButton* var : stamButtonList)
-					var->OnClick();
-			if (!stamExpandButtonList.empty())
-				for (StaminaExpandButton* var : stamExpandButtonList)
-					var->OnClick();
+			stamButton->OnClick();
+			stamExpandButton->OnClick();
+			buyAmountButton->OnClick();
 			SDL_Point mouse = { 0,0 };
 			SDL_GetMouseState(&mouse.x, &mouse.y);
 			if (SDL_PointInRect(&mouse, window))

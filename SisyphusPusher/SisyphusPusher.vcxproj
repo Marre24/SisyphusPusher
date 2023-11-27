@@ -148,6 +148,7 @@
     <ClCompile Include="EventHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BuyAmountButton.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="LargeNumber.h" />
     <ClInclude Include="Sisyphus.h" />

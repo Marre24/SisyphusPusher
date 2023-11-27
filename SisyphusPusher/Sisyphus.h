@@ -11,6 +11,7 @@ public:
 	std::unique_ptr<LargeNumber> heightClimed = std::make_unique<LargeNumber>(0,0);
 	std::unique_ptr<LargeNumber> strength = std::make_unique<LargeNumber>(0.3f,0);
 	std::map<int, LargeNumber*> dividedStrength = { };
+	int buyCounter = 1;
 
 	Sisyphus() {
 	}

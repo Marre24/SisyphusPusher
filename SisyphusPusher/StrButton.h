@@ -29,20 +29,44 @@ public:
 		
 		SDL_Surface* surfaceMessage;
 		SDL_Color color;
-		if (sisyphus->glory->IsGreaterThan(cost))
-			color = { 50, 205,50 };
-		else
-			color = { 255, 0, 0 };
-		if (nextGoal > 400) {
+		switch (sisyphus->buyCounter)
+		{
+		case 1:
+			if (sisyphus->glory->IsGreaterThan(cost))
+				color = { 50, 205,50 };
+			else
+				color = { 255, 0, 0 };
+			break;
+		case 2:
+			if (sisyphus->glory->IsGreaterThan(baseCost->Times((pow(coefficient, amountBought) * (pow(coefficient, std::min(10, 400 - amountBought)) - 1)) / (coefficient - 1), false)))
+				color = { 50, 205,50 };
+			else
+				color = { 255, 0, 0 };
+			break;
+		}
+		
+		if (nextGoal > maxGoal) {
 			color = { 105,105,105 };
 			surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), "MAX", color);
 		}
-		else
-			surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), cost->ToString().c_str(), color);
+		else {
+			std::string string = "";
+			
+			switch (sisyphus->buyCounter)
+			{
+			case 1:
+				string = cost->ToString();
+				break;
+			case 2:
+				string = tenCost->ToString();
+				break;
+			}
+			surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), string.c_str(), color);
+		}
 
 
 		DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y- 5, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
-		surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 20), std::to_string(amountBought).c_str(), {211,211,211});
+		surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 20), std::to_string(amountBought).c_str(), { 169,169,169 });
 		DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y + 20, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
 		DrawTexture(renderer, greenRect, greenColor);
 		DrawTexture(renderer, borderRect, border);
@@ -62,40 +86,52 @@ public:
 
 	int Update() {
 		Button::Update();
-		if (nextGoal > 400)
+		tenCost = baseCost->Times((pow(coefficient,amountBought) * (pow(coefficient, 10) - 1)) / (coefficient - 1), false);
+		tenCost->Update();
+		if (amountBought >= nextGoal)
+		{
+			sisyphus->GoalReached(id, goals[nextGoal]);
+			nextGoal *= 2;
+		}
+
+		if (nextGoal > maxGoal)
 			greenRect->w = borderRect->w;
 		else
 			greenRect->w = borderRect->w * amountBought / nextGoal;
+		
 		return 0;
 	}
 
 	int OnClick() {
-		if (!isHovering || nextGoal > 400)
+		if (!isHovering || nextGoal > maxGoal)
 			return 0;
-		if (sisyphus->glory->Pay(cost) < 0)
-			return -1;
-
-		if (++amountBought == nextGoal)
+		LargeNumber* chosenCost = cost;
+		int amount = 1;
+		switch (sisyphus->buyCounter)
 		{
-			sisyphus->GoalReached(id, goals[amountBought]);
-			nextGoal *= 2;
+		case 2:
+			amount = std::min(10, maxGoal - amountBought);
+			chosenCost = baseCost->Times((pow(coefficient, amountBought) * (pow(coefficient, amount) - 1)) / (coefficient - 1), false);
+			break;
 		}
-		cost->Times(coefficient);
-		sisyphus->Strengthen(reward, id);
+		if (sisyphus->glory->Pay(chosenCost) < 0)
+			return -1;
+		amountBought += amount;
+		cost->Times(pow(coefficient, amount));
+		sisyphus->Strengthen(reward->Times(amount, false), id);
 		return 0;
 	}
 
 private:
-	int amountBought = 350;
-	float nextGoal = 400;
-	int counter = 0;
+	int amountBought = 0;
+	float nextGoal = 25;
 	std::map<int, float> goals = {
 		{25, 2.0f},
 		{50, 3.0f},
 		{100, 2.0f},
-		{200, 2.0f},
-		{400, 4.0f},
+		{200, 4.0f},
 	};
+	const int maxGoal = 200;
 	Sisyphus* sisyphus;
 	LargeNumber* reward;
 	const char* fontPath = "FieldGuide.TTF";
@@ -106,5 +142,6 @@ private:
 	SDL_Rect* borderRect;
 	SDL_Rect* greenRect;
 	int id;
+	LargeNumber* tenCost;
 };
 

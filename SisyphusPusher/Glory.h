@@ -54,8 +54,12 @@ public:
 		return glory->LargerThan(num);
 	}
 
+	LargeNumber* GetGlory() {
+		return glory.get();
+	}
+
 private:
-	std::unique_ptr<LargeNumber> glory = std::make_unique<LargeNumber>(1, 15);
+	std::unique_ptr<LargeNumber> glory = std::make_unique<LargeNumber>(0, 0);
 	const int expInterval = 3;
 	const char* fontPath = "FieldGuide.TTF";
 };
