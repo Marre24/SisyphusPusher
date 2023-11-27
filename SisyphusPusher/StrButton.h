@@ -38,7 +38,7 @@ public:
 				color = { 255, 0, 0 };
 			break;
 		case 2:
-			if (sisyphus->glory->IsGreaterThan(baseCost->Times((pow(coefficient, amountBought) * (pow(coefficient, std::min(10, 400 - amountBought)) - 1)) / (coefficient - 1), false)))
+			if (sisyphus->glory->IsGreaterThan(tenCost))
 				color = { 50, 205,50 };
 			else
 				color = { 255, 0, 0 };
@@ -114,6 +114,7 @@ public:
 			chosenCost = baseCost->Times((pow(coefficient, amountBought) * (pow(coefficient, amount) - 1)) / (coefficient - 1), false);
 			break;
 		}
+		chosenCost->Update();
 		if (sisyphus->glory->Pay(chosenCost) < 0)
 			return -1;
 		amountBought += amount;

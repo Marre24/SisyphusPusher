@@ -121,7 +121,7 @@ public:
 		stamButton = new StaminaRefillButton(1632, 896 + 40,
 			btnUpPath, btnDownPath, 
 			player.get(), 
-			new LargeNumber(10, 0), 0.2f, 2.0f);
+			new LargeNumber(5, 0), 0.5f, 5.0f);
 		stamExpandButton = new StaminaExpandButton(1344, 896 + 40,
 			btnUpPath, btnDownPath, 
 			player.get(), 
