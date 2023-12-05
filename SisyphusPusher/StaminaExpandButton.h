@@ -15,38 +15,52 @@ public:
 	StaminaExpandButton(int x, int y, std::string buttonTexturePath, std::string hoverTexturePath, Sisyphus* sisyphus, LargeNumber* cost, float staminaReward, float coefficient) : 
 		Button(x, y, buttonTexturePath, hoverTexturePath, cost, coefficient)
 	{
-		this->cost = cost;
+		this->cost = std::make_unique<LargeNumber>(*cost);
 		this->staminaReward = staminaReward;
 		this->sisyphus = sisyphus;
+        this->font = TTF_OpenFont(fontPath, 30);
 	}
 
-	int Draw(SDL_Renderer* renderer) {
-		Button::Draw(renderer);
-		SDL_Surface* surfaceMessage;
-		if (sisyphus->glory->IsGreaterThan(cost))
-			surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), cost->ToString().c_str(), { 50,205,50 });
-		else
-			surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), cost->ToString().c_str(), { 255, 0, 0 });
-		if (amountBought > maxBuy)
-			surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), "MAX", { 105,105,105 });
+    ~StaminaExpandButton()
+    {
+        TTF_CloseFont(font);
+    }
 
-		SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-		DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y - 5, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
-		surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 20), std::to_string(amountBought).c_str(), { 169,169,169 });
-		DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y + 20, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
-		SDL_DestroyTexture(message);
-		SDL_FreeSurface(surfaceMessage);
+    int Draw(SDL_Renderer* renderer)
+    {
+        Button::Draw(renderer);
 
-		TTF_CloseFont(TTF_OpenFont(fontPath, 30));
-		return 0;
-	}
+        SDL_Surface* surfaceMessage;
+        SDL_Color textColor;
 
-	int DrawTexture(SDL_Renderer* renderer, SDL_Rect* rect, SDL_Surface* surface) {
-		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-		SDL_RenderCopy(renderer, texture, NULL, rect);
-		SDL_DestroyTexture(texture);
-		return 0;
-	}
+        if (sisyphus->glory->IsGreaterThan(cost.get()))
+            textColor = { 50, 205, 50 };
+        else
+            textColor = { 255, 0, 0 };
+
+        surfaceMessage = TTF_RenderText_Solid(font, cost->ToString().c_str(), textColor);
+
+        if (amountBought > maxBuy) {
+            SDL_FreeSurface(surfaceMessage);
+            surfaceMessage = TTF_RenderText_Solid(font, "MAX", { 105, 105, 105 });
+        }
+
+        DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y - 5, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
+        SDL_FreeSurface(surfaceMessage);
+
+        surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 20), std::to_string(amountBought).c_str(), { 169, 169, 169 });
+        DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y + 20, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
+        SDL_FreeSurface(surfaceMessage);
+
+        return 0;
+    }
+
+    int DrawTexture(SDL_Renderer* renderer, SDL_Rect* rect, SDL_Surface* surface) {
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_RenderCopy(renderer, texture, NULL, rect);
+        SDL_DestroyTexture(texture);
+        return 0;
+    }
 
 	int Update() {
 		Button::Update();
@@ -57,7 +71,9 @@ public:
 	int OnClick() {
 		if (!isHovering)
 			return 0;
-		if (++amountBought >= maxBuy || sisyphus->glory->Pay(cost) < 0)
+		if (sisyphus->glory->Pay(cost.get()) < 0)
+			return -1;
+		if (++amountBought >= maxBuy)
 			return -1;
 		cost->Times(coefficient);
 		sisyphus->IncreaseStamina(staminaReward);
@@ -70,5 +86,5 @@ private:
 	Sisyphus* sisyphus;
 	float staminaReward;
 	const char* fontPath = "FieldGuide.TTF";
+    TTF_Font* font;
 };
-

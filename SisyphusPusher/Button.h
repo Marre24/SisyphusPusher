@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <string>
 #include <SDL_image.h>
+#include <memory>
 #include "LargeNumber.h"
 
 class Button
@@ -12,8 +13,8 @@ protected:
 	SDL_Rect rect = { 0, 0, 0, 0};
 	SDL_Surface* btn;
 	SDL_Surface* btnHover;
-	LargeNumber* cost;
-	LargeNumber* baseCost;
+	std::unique_ptr<LargeNumber> cost;
+	std::unique_ptr<LargeNumber> baseCost;
 	float coefficient;
 
 public:
@@ -21,8 +22,8 @@ public:
 	Button(int x, int y, std::string buttonTexturePath, std::string hoverTexturePath, LargeNumber* baseCost, float coefficient) {
 		if (baseCost != nullptr)
 		{
-			this->cost = baseCost;
-			this->baseCost = new LargeNumber(baseCost->Value(), baseCost->Exponent());
+			this->cost = std::make_unique<LargeNumber>(baseCost->Value(), baseCost->Exponent());
+			this->baseCost = std::make_unique<LargeNumber>(*baseCost);
 			this->coefficient = coefficient;
 		}
 		rect = { x, y, 224, 64};

@@ -17,7 +17,7 @@ public:
 		this->sisyphus = sisyphus;
 	}
 
-	int Draw(SDL_Renderer* renderer) {
+	const int Draw(SDL_Renderer* renderer){
 		Button::Draw(renderer);
 
 		SDL_Surface* surfaceMessage;
@@ -62,6 +62,10 @@ public:
 		return 0;
 	}
 
+	~BuyAmountButton()
+	{
+		delete sisyphus;
+	}
 private:
 	int counter = 1;
 	Sisyphus* sisyphus;

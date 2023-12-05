@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "Glory.h";
 #include "LargeNumber.h";
 #include "Stamina.h";
@@ -10,7 +11,7 @@ public:
 	std::unique_ptr<Stamina> stamina = std::make_unique<Stamina>();
 	std::unique_ptr<LargeNumber> heightClimed = std::make_unique<LargeNumber>(0,0);
 	std::unique_ptr<LargeNumber> strength = std::make_unique<LargeNumber>(0.3f,0);
-	std::map<int, LargeNumber*> dividedStrength = { };
+	std::map<int, std::unique_ptr<LargeNumber>> dividedStrength = { };
 	int buyCounter = 1;
 
 	Sisyphus() {
@@ -68,16 +69,17 @@ public:
 
 	int Strengthen(LargeNumber* extra, int id) {
 		if (!dividedStrength.contains(id))
-			dividedStrength.insert({ id, new LargeNumber(0,0) });
+			dividedStrength.insert({ id, std::make_unique<LargeNumber>(0,0) });
 		dividedStrength[id]->Add(extra);
 		strength = std::make_unique<LargeNumber>(StrengthSum());
 		return 0;
 	}
 
 	LargeNumber StrengthSum() {
-		LargeNumber sum = LargeNumber(0,0);
-		for(const auto& kv : dividedStrength)
-			sum.Add(kv.second);
+		LargeNumber sum = LargeNumber(0, 0);
+		for (const auto& kv : dividedStrength)
+			sum.Add(kv.second.get());
+		sum.Add(new LargeNumber(0.3, 0));
 		return sum;
 	}
 

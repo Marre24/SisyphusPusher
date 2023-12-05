@@ -150,7 +150,4 @@ private:
 		{18, "Exa"},
 	};
 	std::tuple<float, int> number = std::tuple<float, int>();
-
-
-
 };

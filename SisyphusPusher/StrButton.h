@@ -24,15 +24,24 @@ public:
 		greenRect = new SDL_Rect{ x, y + 80, 16, 16 };
 	}
 
-	int Draw(SDL_Renderer* renderer){
+	~StrButton()
+	{
+		SDL_FreeSurface(border);
+		SDL_FreeSurface(greenColor);
+		delete borderRect;
+		delete greenRect;
+		delete tenCost;
+	}
+
+	int Draw(SDL_Renderer* renderer) {
 		Button::Draw(renderer);
-		
+
 		SDL_Surface* surfaceMessage;
 		SDL_Color color;
-		switch (sisyphus->buyCounter)
-		{
+
+		switch (sisyphus->buyCounter) {
 		case 1:
-			if (sisyphus->glory->IsGreaterThan(cost))
+			if (sisyphus->glory->IsGreaterThan(cost.get()))
 				color = { 50, 205,50 };
 			else
 				color = { 255, 0, 0 };
@@ -43,17 +52,18 @@ public:
 			else
 				color = { 255, 0, 0 };
 			break;
+		default:
+			color = { 255, 255, 255 };
+			break;
 		}
-		
+
 		if (nextGoal > maxGoal) {
 			color = { 105,105,105 };
 			surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), "MAX", color);
 		}
 		else {
 			std::string string = "";
-			
-			switch (sisyphus->buyCounter)
-			{
+			switch (sisyphus->buyCounter) {
 			case 1:
 				string = cost->ToString();
 				break;
@@ -64,16 +74,13 @@ public:
 			surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), string.c_str(), color);
 		}
 
-
-		DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y- 5, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
+		DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y - 5, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
 		surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 20), std::to_string(amountBought).c_str(), { 169,169,169 });
 		DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y + 20, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
 		DrawTexture(renderer, greenRect, greenColor);
 		DrawTexture(renderer, borderRect, border);
-
 		SDL_FreeSurface(surfaceMessage);
 
-		TTF_CloseFont(TTF_OpenFont(fontPath, 30));
 		return 0;
 	}
 
@@ -105,7 +112,7 @@ public:
 	int OnClick() {
 		if (!isHovering || nextGoal > maxGoal)
 			return 0;
-		LargeNumber* chosenCost = cost;
+		LargeNumber* chosenCost = cost.get();
 		int amount = 1;
 		switch (sisyphus->buyCounter)
 		{

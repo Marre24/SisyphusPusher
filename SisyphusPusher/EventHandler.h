@@ -23,29 +23,31 @@ private:
 
 public:
 
-	EventHandler(std::list<StrButton*> &strButtonList, StaminaRefillButton* stamButton, StaminaExpandButton* stamExpandButton, BuyAmountButton* buyAmountButton, Sisyphus* player, const SDL_Rect* window) : strButtonList(strButtonList)
+	EventHandler(std::list<StrButton*>& strButtonList, StaminaRefillButton* stamButton, StaminaExpandButton* stamExpandButton, BuyAmountButton* buyAmountButton, Sisyphus* player, const SDL_Rect* window)
+		: strButtonList(strButtonList), stamButton(stamButton), stamExpandButton(stamExpandButton), buyAmountButton(buyAmountButton), player(player), window(window)
 	{ 
-		this->buyAmountButton = buyAmountButton;
-		this->stamButton = stamButton;
-		this->stamExpandButton = stamExpandButton;
-		this->player = player;
-		this->window = window;
+
 	}
 
 	int MousePress(SDL_MouseButtonEvent b) {
 		if (b.button == SDL_BUTTON_LEFT) {
-			if (!strButtonList.empty())
-				for(StrButton* var : strButtonList)
-					var->OnClick();
+			for (StrButton* var : strButtonList) {
+				var->OnClick();
+			}
 			stamButton->OnClick();
 			stamExpandButton->OnClick();
 			buyAmountButton->OnClick();
-			SDL_Point mouse = { 0,0 };
-			SDL_GetMouseState(&mouse.x, &mouse.y);
-			if (SDL_PointInRect(&mouse, window))
-				player->Push();
+			HandleWindowInteraction();
 		}
 		return 0;
+	}
+
+	void HandleWindowInteraction() {
+		SDL_Point mouse = { 0, 0 };
+		SDL_GetMouseState(&mouse.x, &mouse.y);
+		if (SDL_PointInRect(&mouse, window)) {
+			player->Push();
+		}
 	}
 
 	int Update(std::map<SDL_Keycode, bool> keyMap) {

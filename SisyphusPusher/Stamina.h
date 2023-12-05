@@ -18,18 +18,18 @@ public:
 			currentStamina += recoverySpeed;
 		else if (timeSincePush > millisecondsToRefill && currentStamina != maxStamina)
 			currentStamina = maxStamina;
-		borderRect->w = startWidth * maxStamina / 100;
-		stamRect->w = (startWidth * maxStamina / 100) * ProcentLeft();
+		borderRect.w = startWidth * maxStamina / 100;
+		stamRect.w = (startWidth * maxStamina / 100) * ProcentLeft();
 		return 0;
 	}
 
 	int Draw(SDL_Renderer* renderer) {
 
 		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, greenColor);
-		SDL_RenderCopy(renderer, texture, NULL, stamRect);
+		SDL_RenderCopy(renderer, texture, NULL, &stamRect);
 		SDL_DestroyTexture(texture);
 		texture = SDL_CreateTextureFromSurface(renderer, border);
-		SDL_RenderCopy(renderer, texture, NULL, borderRect);
+		SDL_RenderCopy(renderer, texture, NULL, &borderRect);
 		SDL_DestroyTexture(texture);
 		return 0;
 	}
@@ -68,14 +68,14 @@ public:
 	}
 
 private:
-	const int millisecondsToRefill = 200;
+	static const int millisecondsToRefill = 200;
 	SDL_Surface* border;
 	SDL_Surface* greenColor;
 	const std::string borderTexturePath = "StaminaBar.png";
 	const std::string greenTexturePath = "Stamina.png";
 	const char* fontPath = "FieldGuide.TTF";
-	SDL_Rect* borderRect = new SDL_Rect{ 322, 150, 256, 16 };
-	SDL_Rect* stamRect = new SDL_Rect{ 322, 150, 16, 16 };
+	SDL_Rect borderRect = { 322, 150, 256, 16 };
+	SDL_Rect stamRect = { 322, 150, 16, 16 };
 
 	const int startWidth = 256;
 	float maxStamina = 100;
