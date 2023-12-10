@@ -1,26 +1,30 @@
 
 #include <list>
+#include <stdlib.h>
 
 #include "Glory.h";
 #include "StrButton.h";
 #include "EventHandler.h";
 #include "Game.h";
+#include "SaveState.h";
 
 const int FPS = 60;
 const int frameDelay = 1000 / FPS;
 
 int main(int argc, char* args[]) {
-    std::unique_ptr<Game> game = std::make_unique<Game>();
+    Game* game = new Game();
     if (game->Init())
         return 1;
     
-    std::unique_ptr<EventHandler> eventHandler = std::make_unique<EventHandler>(game->strButtons, game->stamButton, game->stamExpandButton, game->buyAmountButton, game->player.get(), &game->tartarusWindow);
+    std::unique_ptr<SaveState> saveState = std::make_unique<SaveState>(game->glory.get(), game->player.get(), game->strButtons, game->stamButton, game->stamExpandButton);
+    saveState->Load();
+    std::unique_ptr<EventHandler> eventHandler = std::make_unique<EventHandler>(game->strButtons, game->stamButton, game->stamExpandButton, game->buyAmountButton, game->player.get(), &game->tartarusWindow, game->exitButton.get());
     std::map<SDL_Keycode, bool> keyMap;
     SDL_Event e;
     Uint32 frameStart;
     int frameTime;
 
-    while (game->isPlaying)
+    while (game->isPlaying && !game->exitButton->exited)
     {
         frameStart = SDL_GetTicks();
 
@@ -46,9 +50,10 @@ int main(int argc, char* args[]) {
         game->Draw();
 
         frameTime = SDL_GetTicks() - frameStart;
-        if (frameDelay > frameTime)
+        if (frameDelay > frameTime && !game->exitButton->exited)
             SDL_Delay(frameDelay - frameTime);
     }
+    saveState->Save();
     game->Exit();
     return 0;
 }

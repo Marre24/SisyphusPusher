@@ -50,9 +50,14 @@ public:
 	std::list<StrButton*> strButtons = std::list<StrButton*>();
 	StaminaRefillButton* stamButton;
 	StaminaExpandButton* stamExpandButton;
+	std::unique_ptr<ExitButton> exitButton;
 	BuyAmountButton* buyAmountButton;
 
 	bool isPlaying = true;
+
+	~Game() {
+
+	}
 
 	int Init() {
 		if (SDL_Init(SDL_INIT_VIDEO) == -1 || TTF_Init() == -1)
@@ -135,12 +140,14 @@ public:
 			new LargeNumber(1, 0), 10, 10.0f);
 		//BuyButton
 		buyAmountButton = new BuyAmountButton(1024 + 32, 256 + 40, btnUpPath, btnDownPath, player.get());
-
+		//ExitButton
+		exitButton = std::make_unique<ExitButton>(windowWidth - 85, 50, "ExitButtonUp.png", "ExitButtonDown.png", new LargeNumber(1, 0), 10.0f);
 		return 0;
 	}
 	const float cps = 8;
 
 	int Update() {
+		exitButton->Update();
 		player->Update();
 		glory->Update();
 		for(StrButton* button : strButtons)
@@ -160,6 +167,7 @@ public:
 		ground->Draw(renderer);
 		Draw(SDL_CreateTextureFromSurface(renderer, buttonWindow), buttonWindowRect);
 		glory->Draw(renderer);
+		exitButton->Draw(renderer);
 		for (StrButton* button : strButtons)
 			button->Draw(renderer);
 		stamButton->Draw(renderer);

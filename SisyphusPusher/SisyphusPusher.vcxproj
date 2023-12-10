@@ -150,9 +150,11 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="BuyAmountButton.h" />
+    <ClInclude Include="ExitButton.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="LargeNumber.h" />
+    <ClInclude Include="SaveState.h" />
     <ClInclude Include="Sisyphus.h" />
     <ClInclude Include="Stamina.h" />
     <ClInclude Include="StaminaExpandButton.h" />

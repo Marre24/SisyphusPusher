@@ -50,13 +50,13 @@ public:
 		TTF_CloseFont(TTF_OpenFont(fontPath, 30));
 	}
 
-	int AddRecoverySpeed(float f) {
-		recoverySpeed += f;
+	int SetRecoverySpeed(float f) {
+		recoverySpeed = f;
 		return 0;
 	}
 
-	int AddStamina(float f) {
-		maxStamina += f;
+	int SetStamina(float f) {
+		maxStamina = f;
 		return 0;
 	}
 

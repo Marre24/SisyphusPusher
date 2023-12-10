@@ -26,6 +26,11 @@ public:
         TTF_CloseFont(font);
     }
 
+    int Load(int amountBought) {
+        this->amountBought = amountBought;
+        return 0;
+    }
+
     int Draw(SDL_Renderer* renderer)
     {
         Button::Draw(renderer);
@@ -63,6 +68,8 @@ public:
     }
 
 	int Update() {
+        sisyphus->SetMaxStamina(staminaReward * amountBought + 100);
+        cost = std::unique_ptr<LargeNumber>(baseCost->Times(pow(coefficient, amountBought), false));
 		Button::Update();
 
 		return 0;
@@ -76,9 +83,13 @@ public:
 		if (++amountBought >= maxBuy)
 			return -1;
 		cost->Times(coefficient);
-		sisyphus->IncreaseStamina(staminaReward);
+		sisyphus->SetMaxStamina(staminaReward * amountBought + 100);
 		return 0;
 	}
+
+    std::string ToString() {
+        return "AmountBought:" + std::to_string(amountBought);
+    }
 
 private:
 	int amountBought = 0;

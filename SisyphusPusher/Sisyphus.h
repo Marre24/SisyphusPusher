@@ -3,6 +3,7 @@
 #include "Glory.h";
 #include "LargeNumber.h";
 #include "Stamina.h";
+#include <list>
 
 class Sisyphus
 {
@@ -17,6 +18,15 @@ public:
 
 	Sisyphus(Glory* glory) {
 		this->glory = glory;
+	}
+
+	int Load(LargeNumber* height, std::list<LargeNumber*> nums) {
+		heightClimed = std::unique_ptr<LargeNumber>(height);
+		int i = 0;
+		for (LargeNumber* num : nums)
+			dividedStrength.insert({ i++, std::unique_ptr<LargeNumber>(num) });
+		strength = std::make_unique<LargeNumber>(StrengthSum());
+		return 0;
 	}
 
 	int Update() {
@@ -87,14 +97,23 @@ public:
 		return sum;
 	}
 
-	int IncreaseRecoverySpeed(float f) {
-		stamina->AddRecoverySpeed(f);
+	int SetRecoverySpeed(float f) {
+		stamina->SetRecoverySpeed(f);
 		return 0;
 	}
 
-	int IncreaseStamina(float f) {
-		stamina->AddStamina(f);
+	int SetMaxStamina(float f) {
+		stamina->SetStamina(f);
 		return 0;
+	}
+
+	std::string ToString() {
+		std::string str = "";
+		str += "Height:(" + std::to_string(heightClimed->Value()) + "," + std::to_string(heightClimed->Exponent()) + ")\n";
+		str += "Strength:";
+		for (const auto& kv : dividedStrength)
+			str += "ID:" + std::to_string(kv.first) + "(" + std::to_string(kv.second->Value()) + "," + std::to_string(kv.second->Exponent()) + ")";
+		return str;
 	}
 
 private:

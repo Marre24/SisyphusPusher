@@ -16,9 +16,15 @@ public:
 	Glory() {
 	}
 
+	int Load(LargeNumber* glry) {
+		glory = std::unique_ptr<LargeNumber>(glry);
+		return 0;
+	}
+
 	std::string ToString() {
 		return glory->ToString() + " Glory";
 	}
+
 
 	int Update() {
 		glory->Update();

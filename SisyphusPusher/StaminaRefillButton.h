@@ -67,6 +67,8 @@ public:
 
     int Update()
     {
+        sisyphus->SetRecoverySpeed(staminaReward * amountBought + 0.15f);
+        cost = std::unique_ptr<LargeNumber>(baseCost->Times(pow(coefficient, amountBought), false));
         Button::Update();
         return 0;
     }
@@ -80,7 +82,16 @@ public:
         if (++amountBought >= maxBuy)
             return -1;
         cost->Times(coefficient);
-        sisyphus->IncreaseRecoverySpeed(staminaReward);
+        sisyphus->SetRecoverySpeed(staminaReward * amountBought + 0.15f);
+        return 0;
+    }
+
+    std::string ToString() {
+        return "AmountBought:" + std::to_string(amountBought);
+    }
+
+    int Load(int amountBought) {
+        this->amountBought = amountBought;
         return 0;
     }
 

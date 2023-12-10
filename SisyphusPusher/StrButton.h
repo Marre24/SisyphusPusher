@@ -94,6 +94,7 @@ public:
 	}
 
 	int Update() {
+		cost = std::unique_ptr<LargeNumber>(baseCost->Times(pow(coefficient, amountBought), false));
 		Button::Update();
 		tenCost = baseCost->Times((pow(coefficient,amountBought) * (pow(coefficient, 10) - 1)) / (coefficient - 1), false);
 		tenCost->Update();
@@ -130,6 +131,19 @@ public:
 		cost->Times(pow(coefficient, amount));
 		sisyphus->Strengthen(reward->Times(amount, false), id);
 		return 0;
+	}
+
+	std::string ToString() {
+		return "AmountBought:" + std::to_string(amountBought);
+	}
+
+	int Load(int amountBought) {
+		this->amountBought = amountBought;
+		return 0;
+	}
+
+	LargeNumber* TotalReward() {
+		return reward->Times(amountBought, false);
 	}
 
 private:
