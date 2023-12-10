@@ -16,6 +16,7 @@
 #include "StaminaRefillButton.h";
 #include "StaminaExpandButton.h";
 #include "BuyAmountButton.h"
+#include "Ground.h";
 
 
 class Game
@@ -42,8 +43,10 @@ private:
 public:
 	const SDL_Rect* buttonWindowRect = new SDL_Rect{ 1024, 28, 896, 1024 };
 	const SDL_Rect tartarusWindow{ 0, 28, 1024, 1024 };
-	std::unique_ptr<Sisyphus> player = std::make_unique<Sisyphus>();
+	std::unique_ptr<Sisyphus> player;
+	std::unique_ptr<Glory> glory = std::make_unique<Glory>();
 	std::unique_ptr<Tartarus> tartarus;
+	std::unique_ptr<Ground> ground;
 	std::list<StrButton*> strButtons = std::list<StrButton*>();
 	StaminaRefillButton* stamButton;
 	StaminaExpandButton* stamExpandButton;
@@ -73,8 +76,10 @@ public:
 			return 1;
 		}
 
+		player = std::make_unique<Sisyphus>(glory.get());
 		buttonWindow = IMG_Load("ButtonWindow.png");
 		tartarus = std::make_unique<Tartarus>(player.get());
+		ground = std::make_unique<Ground>(player.get());
 		int id = 0;
 
 		//Row 1
@@ -137,6 +142,7 @@ public:
 
 	int Update() {
 		player->Update();
+		glory->Update();
 		for(StrButton* button : strButtons)
 			button->Update();
 		stamButton->Update();
@@ -149,10 +155,11 @@ public:
 	int Draw() {
 		SDL_RenderClear(renderer);
 
-		Draw(SDL_CreateTextureFromSurface(renderer, buttonWindow), buttonWindowRect);
-
 		tartarus->Draw(renderer);
 		player->Draw(renderer);
+		ground->Draw(renderer);
+		Draw(SDL_CreateTextureFromSurface(renderer, buttonWindow), buttonWindowRect);
+		glory->Draw(renderer);
 		for (StrButton* button : strButtons)
 			button->Draw(renderer);
 		stamButton->Draw(renderer);

@@ -7,20 +7,20 @@
 class Sisyphus
 {
 public:
-	std::unique_ptr<Glory> glory = std::make_unique<Glory>();
 	std::unique_ptr<Stamina> stamina = std::make_unique<Stamina>();
 	std::unique_ptr<LargeNumber> heightClimed = std::make_unique<LargeNumber>(0,0);
 	std::unique_ptr<LargeNumber> strength = std::make_unique<LargeNumber>(0.3f,0);
 	std::map<int, std::unique_ptr<LargeNumber>> dividedStrength = { };
 	int buyCounter = 1;
 	bool isPushing = false;
+	Glory* glory;
 
-	Sisyphus() {
+	Sisyphus(Glory* glory) {
+		this->glory = glory;
 	}
 
 	int Update() {
 		heightClimed->Remove(new LargeNumber(1,0));
-		glory->Update();
 		heightClimed->Update();
 		strength->Update();
 		stamina->Update(SDL_GetTicks() - lastPushTime);
@@ -32,7 +32,6 @@ public:
 	}
 
 	int Draw(SDL_Renderer* renderer) {
-		glory->Draw(renderer);
 		stamina->Draw(renderer);
 
 		ShowMessage(renderer, heightClimed->ToString(true) + "meter (" + strength->ToString(true) + "meter/click)", 450, 100);

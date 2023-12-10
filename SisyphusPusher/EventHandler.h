@@ -58,10 +58,8 @@ public:
 			return 0;
 		}
 
-		for (int i = 0; i < keyMap.size(); i++) {
-			if (keyMap[SDLK_SPACE] && !lastFrameKeys[SDLK_SPACE])
-				player->Push();
-		}
+		if (keyMap[SDLK_SPACE] && !lastFrameKeys[SDLK_SPACE])
+			player->Push();
 		lastFrameKeys = keyMap;
 		return 0;
 	}

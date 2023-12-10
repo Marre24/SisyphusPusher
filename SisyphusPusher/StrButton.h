@@ -79,6 +79,8 @@ public:
 		DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y + 20, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
 		DrawTexture(renderer, greenRect, greenColor);
 		DrawTexture(renderer, borderRect, border);
+		surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 20), ("x" + std::to_string((int)goals[nextGoal])).c_str(), {0,255,0});
+		DrawTexture(renderer, new SDL_Rect{ borderRect->x - 20, borderRect->y - 5, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
 		SDL_FreeSurface(surfaceMessage);
 
 		return 0;
