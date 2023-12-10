@@ -148,6 +148,7 @@
     <ClCompile Include="EventHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="BuyAmountButton.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="LargeNumber.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Stamina.h" />
     <ClInclude Include="StaminaExpandButton.h" />
     <ClInclude Include="StaminaRefillButton.h" />
+    <ClInclude Include="Tartarus.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

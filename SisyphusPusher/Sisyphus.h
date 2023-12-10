@@ -13,6 +13,7 @@ public:
 	std::unique_ptr<LargeNumber> strength = std::make_unique<LargeNumber>(0.3f,0);
 	std::map<int, std::unique_ptr<LargeNumber>> dividedStrength = { };
 	int buyCounter = 1;
+	bool isPushing = false;
 
 	Sisyphus() {
 	}
@@ -23,6 +24,10 @@ public:
 		heightClimed->Update();
 		strength->Update();
 		stamina->Update(SDL_GetTicks() - lastPushTime);
+		if (SDL_GetTicks() - lastPushTime < 500)
+			isPushing = true;
+		else
+			isPushing = false;
 		return 0;
 	}
 

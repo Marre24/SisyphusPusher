@@ -8,6 +8,7 @@
 #include <memory.h>
 
 #include "Glory.h";
+#include "Tartarus.h";
 #include "StrButton.h";
 #include "EventHandler.h";
 #include "Sisyphus.h";
@@ -36,13 +37,13 @@ private:
 	TTF_Font* sans = NULL;
 	SDL_Color White = { 255, 255, 255 };
 
-	SDL_Surface* tartarus;
 	SDL_Surface* buttonWindow;
 
 public:
 	const SDL_Rect* buttonWindowRect = new SDL_Rect{ 1024, 28, 896, 1024 };
-	const SDL_Rect* tartarusWindow = new SDL_Rect{ 0, 28, 1024, 1024 };
+	const SDL_Rect tartarusWindow{ 0, 28, 1024, 1024 };
 	std::unique_ptr<Sisyphus> player = std::make_unique<Sisyphus>();
+	std::unique_ptr<Tartarus> tartarus;
 	std::list<StrButton*> strButtons = std::list<StrButton*>();
 	StaminaRefillButton* stamButton;
 	StaminaExpandButton* stamExpandButton;
@@ -72,9 +73,10 @@ public:
 			return 1;
 		}
 
-		tartarus = IMG_Load("Tartarus.png");
 		buttonWindow = IMG_Load("ButtonWindow.png");
+		tartarus = std::make_unique<Tartarus>(player.get());
 		int id = 0;
+
 		//Row 1
 		strButtons.push_back(new StrButton(1344, 192 + 40,
 			btnUpPath, btnDownPath,
@@ -148,8 +150,8 @@ public:
 		SDL_RenderClear(renderer);
 
 		Draw(SDL_CreateTextureFromSurface(renderer, buttonWindow), buttonWindowRect);
-		Draw(SDL_CreateTextureFromSurface(renderer, tartarus), tartarusWindow);
 
+		tartarus->Draw(renderer);
 		player->Draw(renderer);
 		for (StrButton* button : strButtons)
 			button->Draw(renderer);
