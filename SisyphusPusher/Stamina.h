@@ -1,6 +1,5 @@
 #pragma once
 #include <SDL.h>
-#include <SDL_ttf.h>
 #include <SDL_image.h>
 #include <string>
 #include <SDL_rect.h>
@@ -34,22 +33,6 @@ public:
 		return 0;
 	}
 
-	int ShowMessage(SDL_Renderer* renderer, std::string string, int x, int y) {
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), string.c_str(), { 255, 255, 255 });
-		if (surfaceMessage == nullptr)
-			return -1;
-
-		SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-		if (Message == nullptr) {
-			SDL_FreeSurface(surfaceMessage);
-			return -1;
-		}
-		SDL_Rect textRect = { x, y, surfaceMessage->w, surfaceMessage->h };
-		SDL_RenderCopy(renderer, Message, NULL, &textRect);
-
-		TTF_CloseFont(TTF_OpenFont(fontPath, 30));
-	}
-
 	int SetRecoverySpeed(float f) {
 		recoverySpeed = f;
 		return 0;
@@ -73,7 +56,6 @@ private:
 	SDL_Surface* greenColor;
 	const std::string borderTexturePath = "StaminaBar.png";
 	const std::string greenTexturePath = "Stamina.png";
-	const char* fontPath = "FieldGuide.TTF";
 	SDL_Rect borderRect = { 322, 150, 256, 16 };
 	SDL_Rect stamRect = { 322, 150, 16, 16 };
 

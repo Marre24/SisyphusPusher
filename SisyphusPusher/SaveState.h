@@ -37,6 +37,10 @@ public:
 			while (saveFileOutput.good()) {
 				strings.push_back("");
 				std::getline(saveFileOutput, strings.at(i++));
+				if (strings.at(0) == "") {
+					std::cout << "Save file was not formatted in the right way, overriding existing file on exit.";
+					return 0;
+				}
 			}
 		}
 
@@ -66,7 +70,7 @@ public:
 		str2.erase(remove(str2.begin(), str2.end(), ')'), str2.end());
 		std::list<LargeNumber*> numbers = {};
 		for (StrButton* strButton : strButtonList)
-			numbers.push_back(strButton->TotalReward());
+			numbers.push_back(strButton->TotalStrength());
 		for (LargeNumber* num : numbers)
 			num->Update();
 		sisyphus->Load(new LargeNumber(std::stof(str1), std::stoi(str2)), numbers);

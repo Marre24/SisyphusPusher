@@ -39,6 +39,9 @@ private:
 	SDL_Color White = { 255, 255, 255 };
 
 	SDL_Surface* buttonWindow;
+	TTF_Font* font;
+	TTF_Font* smallFont;
+	const char* fontPath = "FieldGuide.TTF";
 
 public:
 	const SDL_Rect* buttonWindowRect = new SDL_Rect{ 1024, 28, 896, 1024 };
@@ -81,63 +84,70 @@ public:
 			return 1;
 		}
 
+		font = TTF_OpenFont(fontPath, 30);
+		smallFont = TTF_OpenFont(fontPath, 20);
+		if (!font || !smallFont) 
+			throw std::exception("Failed to load font");
+
 		player = std::make_unique<Sisyphus>(glory.get());
 		buttonWindow = IMG_Load("ButtonWindow.png");
 		tartarus = std::make_unique<Tartarus>(player.get());
 		ground = std::make_unique<Ground>(player.get());
+		
+		
 		int id = 0;
 
 		//Row 1
 		strButtons.push_back(new StrButton(1344, 192 + 40,
 			btnUpPath, btnDownPath,
 			player.get(),
-			new LargeNumber(4, 0), new LargeNumber(1.6 / cps, 0), 1.07f, ++id));
+			LargeNumber(4, 0), LargeNumber(1.6 / cps, 0), 1.07f, ++id));
 		strButtons.push_back(new StrButton(1344, 320 + 40,
 			btnUpPath, btnDownPath,
 			player.get(),
-			new LargeNumber(60, 0), new LargeNumber(20 / cps, 0), 1.15f, ++id));
+			 LargeNumber(60, 0),  LargeNumber(20 / cps, 0), 1.15f, ++id));
 		strButtons.push_back(new StrButton(1344, 448 + 40,
 			btnUpPath, btnDownPath,
 			player.get(),
-			new LargeNumber(720, 0), new LargeNumber(90 / cps, 0), 1.14f, ++id));
+			 LargeNumber(720, 0),  LargeNumber(90 / cps, 0), 1.14f, ++id));
 		strButtons.push_back(new StrButton(1344, 576 + 40,
 			btnUpPath, btnDownPath,
 			player.get(),
-			new LargeNumber(8640, 0), new LargeNumber(360 / cps, 0), 1.13f, ++id));
+			 LargeNumber(8640, 0),  LargeNumber(360 / cps, 0), 1.13f, ++id));
 		strButtons.push_back(new StrButton(1344, 704 + 40,
 			btnUpPath, btnDownPath,
 			player.get(),
-			new LargeNumber(103, 3), new LargeNumber(2160.0 / cps, 0), 1.12f, ++id));
+			 LargeNumber(103, 3),  LargeNumber(2160.0 / cps, 0), 1.12f, ++id));
 		//Row 2
 		strButtons.push_back(new StrButton(1632, 192 + 40,
 			btnUpPath, btnDownPath,
 			player.get(),
-			new LargeNumber(1244, 3), new LargeNumber(6480.0 / cps, 0), 1.11f, ++id));
+			 LargeNumber(1244, 3),  LargeNumber(6480.0 / cps, 0), 1.11f, ++id));
 		strButtons.push_back(new StrButton(1632, 320 + 40,
 			btnUpPath, btnDownPath,
 			player.get(),
-			new LargeNumber(14.929920f, 6), new LargeNumber(19440 / cps, 0), 1.10f, ++id));
+			 LargeNumber(14.929920f, 6),  LargeNumber(19440 / cps, 0), 1.10f, ++id));
 		strButtons.push_back(new StrButton(1632, 448 + 40,
 			btnUpPath, btnDownPath,
 			player.get(),
-			new LargeNumber(179.159040f, 6), new LargeNumber(58320 / cps, 0), 1.09f, ++id));
+			 LargeNumber(179.159040f, 6),  LargeNumber(58320 / cps, 0), 1.09f, ++id));
 		strButtons.push_back(new StrButton(1632, 576 + 40,
 			btnUpPath, btnDownPath,
 			player.get(),
-			new LargeNumber(2.149908480f, 9), new LargeNumber(174960 / cps, 0), 1.08f, ++id));
+			 LargeNumber(2.149908480f, 9),  LargeNumber(174960 / cps, 0), 1.08f, ++id));
 		strButtons.push_back(new StrButton(1632, 704 + 40,
 			btnUpPath, btnDownPath,
 			player.get(),
-			new LargeNumber(25.798901760f, 9), new LargeNumber(804816 / cps, 0), 1.07f, ++id));
+			 LargeNumber(25.798901760f, 9),  LargeNumber(804816 / cps, 0), 1.07f, ++id));
 		//Stamina buttons
 		stamButton = new StaminaRefillButton(1632, 896 + 40,
 			btnUpPath, btnDownPath, 
 			player.get(), 
-			new LargeNumber(5, 0), 0.5f, 5.0f);
+			LargeNumber(5, 0), 0.5f, 5.0f);
 		stamExpandButton = new StaminaExpandButton(1344, 896 + 40,
 			btnUpPath, btnDownPath, 
 			player.get(), 
-			new LargeNumber(1, 0), 10, 10.0f);
+			LargeNumber(1, 0), 10, 10.0f);
 		//BuyButton
 		buyAmountButton = new BuyAmountButton(1024 + 32, 256 + 40, btnUpPath, btnDownPath, player.get());
 		//ExitButton
@@ -163,16 +173,16 @@ public:
 		SDL_RenderClear(renderer);
 
 		tartarus->Draw(renderer);
-		player->Draw(renderer);
+		player->Draw(renderer, font);
 		ground->Draw(renderer);
 		Draw(SDL_CreateTextureFromSurface(renderer, buttonWindow), buttonWindowRect);
-		glory->Draw(renderer);
-		exitButton->Draw(renderer);
+		glory->Draw(renderer, font);
+		exitButton->Draw(renderer, font);
 		for (StrButton* button : strButtons)
-			button->Draw(renderer);
-		stamButton->Draw(renderer);
-		stamExpandButton->Draw(renderer);
-		buyAmountButton->Draw(renderer);
+			button->Draw(renderer,font, smallFont);
+		stamButton->Draw(renderer, font, smallFont);
+		stamExpandButton->Draw(renderer, font, smallFont);
+		buyAmountButton->Draw(renderer, font);
 
 		SDL_RenderPresent(renderer);
 		return 0;
@@ -188,6 +198,8 @@ public:
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(window);
 		SDL_Quit();
+		TTF_CloseFont(font);
+		TTF_CloseFont(smallFont);
 		return 0;
 	}
 };

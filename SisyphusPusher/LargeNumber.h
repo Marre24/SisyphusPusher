@@ -119,6 +119,12 @@ public:
 		return new LargeNumber(Value() * f, Exponent());
 	}
 
+	int Times(float f, bool savesNumber, LargeNumber number) {
+		std::get<0>(this->number) = number.Value() * f;
+		std::get<1>(this->number) = number.Exponent();
+		return 0;
+	}
+
 	LargeNumber* DividedBy(LargeNumber* lNum) {
 		if (lNum->Exponent() == 0)
 			return new LargeNumber(pow(lNum->Value(), 1), this->Exponent() - lNum->Exponent());

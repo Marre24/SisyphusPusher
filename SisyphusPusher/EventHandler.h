@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 
 #include <SDL.h>
 #include <list>
@@ -25,8 +26,8 @@ private:
 
 public:
 
-	EventHandler(std::list<StrButton*>& strButtonList, StaminaRefillButton* stamButton, StaminaExpandButton* stamExpandButton, BuyAmountButton* buyAmountButton, Sisyphus* player, const SDL_Rect* window, ExitButton* exitButton)
-		: strButtonList(strButtonList), stamButton(stamButton), stamExpandButton(stamExpandButton), buyAmountButton(buyAmountButton), player(player), window(window), exitButton(exitButton)
+	EventHandler(std::list<StrButton*>& strButtonList, StaminaRefillButton* stamButton, StaminaExpandButton* stamExpandButton, BuyAmountButton* buyAmountButton, Sisyphus* player, const SDL_Rect* window, ExitButton* exitButton) : 
+		strButtonList(strButtonList), stamButton(stamButton), stamExpandButton(stamExpandButton), buyAmountButton(buyAmountButton), player(player), window(window), exitButton(exitButton)
 	{ 
 
 	}

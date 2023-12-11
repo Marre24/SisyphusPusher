@@ -12,8 +12,8 @@
 class Glory
 {
 public:
-
 	Glory() {
+
 	}
 
 	int Load(LargeNumber* glry) {
@@ -31,8 +31,8 @@ public:
 		return 0;
 	}
 
-	int Draw(SDL_Renderer* renderer) {
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), ToString().c_str(), { 255, 255, 255 });
+	int Draw(SDL_Renderer* renderer, TTF_Font* font) {
+		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, ToString().c_str(), { 255, 255, 255 });
 		if (surfaceMessage == nullptr) 
 			return -1;
 
@@ -43,8 +43,6 @@ public:
 		}
 		SDL_Rect textRect = { 1400, 80, surfaceMessage->w, surfaceMessage->h };
 		SDL_RenderCopy(renderer, Message, NULL, &textRect);
-
-		TTF_CloseFont(TTF_OpenFont(fontPath, 30));
 		return 0;
 	}
 
@@ -67,5 +65,4 @@ public:
 private:
 	std::unique_ptr<LargeNumber> glory = std::make_unique<LargeNumber>(0, 0);
 	const int expInterval = 3;
-	const char* fontPath = "FieldGuide.TTF";
 };

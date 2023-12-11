@@ -41,15 +41,15 @@ public:
 		return 0;
 	}
 
-	int Draw(SDL_Renderer* renderer) {
+	int Draw(SDL_Renderer* renderer, TTF_Font* font) {
 		stamina->Draw(renderer);
 
-		ShowMessage(renderer, heightClimed->ToString(true) + "meter (" + strength->ToString(true) + "meter/click)", 450, 100);
+		ShowMessage(renderer, heightClimed->ToString(true) + "meter (" + strength->ToString(true) + "meter/click)", 450, 100, font);
 		return 0;
 	}
 
-	int ShowMessage(SDL_Renderer* renderer, std::string string, int x, int y) {
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(TTF_OpenFont(fontPath, 30), string.c_str(), { 255, 255, 255 });
+	int ShowMessage(SDL_Renderer* renderer, std::string string, int x, int y, TTF_Font* font) {
+		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, string.c_str(), { 255, 255, 255 });
 		if (surfaceMessage == nullptr)
 			return -1;
 
@@ -60,8 +60,6 @@ public:
 		}
 		SDL_Rect textRect = { x - surfaceMessage->w / 2, y, surfaceMessage->w, surfaceMessage->h };
 		SDL_RenderCopy(renderer, Message, NULL, &textRect);
-
-		TTF_CloseFont(TTF_OpenFont(fontPath, 30));
 	}
 
 	int Push() {
@@ -70,14 +68,6 @@ public:
 		lastPushTime = SDL_GetTicks();
 		heightClimed->Add(strength.get());
 		glory->Earn(strength.get());
-		return 0;
-	}
-
-	int GoalReached(int id, float multiplyer) {
-		if (!dividedStrength.contains(id))
-			return -1;
-		dividedStrength[id]->Times(multiplyer);
-		strength = std::make_unique<LargeNumber>(StrengthSum());
 		return 0;
 	}
 
@@ -95,6 +85,11 @@ public:
 			sum.Add(kv.second.get());
 		sum.Add(new LargeNumber(0.3, 0));
 		return sum;
+	}
+
+	int UpdateStrength(int id, LargeNumber* lNum) {
+		dividedStrength.insert({ id, std::unique_ptr<LargeNumber>(lNum) });
+		return 0;
 	}
 
 	int SetRecoverySpeed(float f) {
@@ -118,5 +113,4 @@ public:
 
 private:
 	float lastPushTime = 0;	//In ms
-	const char* fontPath = "FieldGuide.TTF";
 };

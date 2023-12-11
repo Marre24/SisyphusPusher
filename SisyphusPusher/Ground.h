@@ -25,10 +25,10 @@ public:
 			rect2.x -= speed;
 			rect2.y += speed / 2;
 		}
-		if (rect1.x <= -1024)
-			rect1 = { 1024 - (int)speed,28,1024,1024 };
-		if (rect2.x <= -1024)
-			rect2 = { 1024,28,1024,1024 };
+		if (rect1.x <= -1014)
+			rect1 = { 1014,28,1024,1024 };
+		if (rect2.x <= -1014)
+			rect2 = { 1014,28,1024,1024 };
 
 		SDL_Texture* texture1 = SDL_CreateTextureFromSurface(renderer, ground1.get());
 		SDL_RenderCopy(renderer, texture1, NULL, &rect1);
