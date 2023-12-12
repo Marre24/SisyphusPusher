@@ -7,7 +7,6 @@
 #include <SDL_ttf.h>
 #include <memory>
 
-#include "LargeNumber.h";
 
 class Glory
 {
@@ -16,20 +15,15 @@ public:
 
 	}
 
-	int Load(LargeNumber* glry) {
-		glory = std::unique_ptr<LargeNumber>(glry);
+	int Load(float glry) {
+		glory = glry;
 		return 0;
 	}
 
 	std::string ToString() {
-		return glory->ToString() + " Glory";
+		return std::to_string(glory) + " Glory";
 	}
 
-
-	int Update() {
-		glory->Update();
-		return 0;
-	}
 
 	int Draw(SDL_Renderer* renderer, TTF_Font* font) {
 		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, ToString().c_str(), { 255, 255, 255 });
@@ -46,23 +40,27 @@ public:
 		return 0;
 	}
 
-	int Pay(LargeNumber* cost) {
-		return glory->Remove(cost);
+	int Pay(float cost) {
+		if (cost > glory)
+			return -1;
+		glory -= cost;
+		return 0;
 	}
 
-	int Earn(LargeNumber* price) {
-		return glory->Add(price);
+	int Earn(float price) {
+		glory += price;
+		return 0;
 	}
 
-	bool IsGreaterThan(LargeNumber* num) {
-		return glory->LargerThan(num);
+	bool IsGreaterThan(float num) {
+		return glory > num;
 	}
 
-	LargeNumber* GetGlory() {
-		return glory.get();
+	float GetGlory() {
+		return glory;
 	}
 
 private:
-	std::unique_ptr<LargeNumber> glory = std::make_unique<LargeNumber>(0, 0);
+	float glory = 0;
 	const int expInterval = 3;
 };

@@ -38,7 +38,7 @@
     <ClInclude Include="Sisyphus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LargeNumber.h">
+    <ClInclude Include="LargeNumberFormatting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Stamina.h">

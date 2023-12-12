@@ -16,9 +16,9 @@ int main(int argc, char* args[]) {
     if (game->Init())
         return 1;
     
-    std::unique_ptr<SaveState> saveState = std::make_unique<SaveState>(game->glory.get(), game->player.get(), game->strButtons, game->stamButton, game->stamExpandButton);
+    std::unique_ptr<SaveState> saveState = std::make_unique<SaveState>(game->glory.get(),game->player.get(), game->strButtons, game->stamButton.get(), game->stamExpandButton.get());
     saveState->Load();
-    std::unique_ptr<EventHandler> eventHandler = std::make_unique<EventHandler>(game->strButtons, game->stamButton, game->stamExpandButton, game->buyAmountButton, game->player.get(), &game->tartarusWindow, game->exitButton.get());
+    std::unique_ptr<EventHandler> eventHandler = std::make_unique<EventHandler>(game->strButtons, game->stamButton.get(), game->stamExpandButton.get(), game->buyAmountButton.get(), game->player.get(), game->tartarusWindow, game->exitButton.get());
     std::map<SDL_Keycode, bool> keyMap;
     SDL_Event e;
     Uint32 frameStart;

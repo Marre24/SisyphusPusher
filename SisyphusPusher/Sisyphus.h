@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include "Glory.h";
-#include "LargeNumber.h";
 #include "Stamina.h";
 #include <list>
 
@@ -9,9 +8,9 @@ class Sisyphus
 {
 public:
 	std::unique_ptr<Stamina> stamina = std::make_unique<Stamina>();
-	std::unique_ptr<LargeNumber> heightClimed = std::make_unique<LargeNumber>(0,0);
-	std::unique_ptr<LargeNumber> strength = std::make_unique<LargeNumber>(0.3f,0);
-	std::map<int, std::unique_ptr<LargeNumber>> dividedStrength = { };
+	float heightClimed = 0;
+	float strength = startStrength;
+	std::map<int, float> dividedStrength = { };
 	int buyCounter = 1;
 	bool isPushing = false;
 	Glory* glory;
@@ -20,19 +19,21 @@ public:
 		this->glory = glory;
 	}
 
-	int Load(LargeNumber* height, std::list<LargeNumber*> nums) {
-		heightClimed = std::unique_ptr<LargeNumber>(height);
+	int Load(float height, std::list<float> dividedStrengthNumbers) {
+		heightClimed = height;
 		int i = 0;
-		for (LargeNumber* num : nums)
-			dividedStrength.insert({ i++, std::unique_ptr<LargeNumber>(num) });
-		strength = std::make_unique<LargeNumber>(StrengthSum());
+		for (float num : dividedStrengthNumbers)
+			dividedStrength.insert({ i++, num });
+		strength = StrengthSum();
 		return 0;
 	}
 
 	int Update() {
-		heightClimed->Remove(new LargeNumber(1,0));
-		heightClimed->Update();
-		strength->Update();
+		strength = StrengthSum();
+		if (heightClimed - 1 < 0)
+			heightClimed = 0;
+		else
+			heightClimed -= 1;
 		stamina->Update(SDL_GetTicks() - lastPushTime);
 		if (SDL_GetTicks() - lastPushTime < 500)
 			isPushing = true;
@@ -44,7 +45,7 @@ public:
 	int Draw(SDL_Renderer* renderer, TTF_Font* font) {
 		stamina->Draw(renderer);
 
-		ShowMessage(renderer, heightClimed->ToString(true) + "meter (" + strength->ToString(true) + "meter/click)", 450, 100, font);
+		ShowMessage(renderer, std::to_string(heightClimed) + "meter (" + std::to_string(strength) + "meter/click)", 450, 100, font);
 		return 0;
 	}
 
@@ -66,29 +67,20 @@ public:
 		if (stamina->Remove(1) < 0)				//placeholder for real stamina cost
 			return -1;
 		lastPushTime = SDL_GetTicks();
-		heightClimed->Add(strength.get());
-		glory->Earn(strength.get());
+		heightClimed += strength;
+		glory->Earn(strength);
 		return 0;
 	}
 
-	int Strengthen(LargeNumber* extra, int id) {
-		if (!dividedStrength.contains(id))
-			dividedStrength.insert({ id, std::make_unique<LargeNumber>(0,0) });
-		dividedStrength[id]->Add(extra);
-		strength = std::make_unique<LargeNumber>(StrengthSum());
-		return 0;
-	}
-
-	LargeNumber StrengthSum() {
-		LargeNumber sum = LargeNumber(0, 0);
-		for (const auto& kv : dividedStrength)
-			sum.Add(kv.second.get());
-		sum.Add(new LargeNumber(0.3, 0));
+	float StrengthSum() {
+		float sum = startStrength;
+		for (auto kv : dividedStrength)
+			sum += kv.second;
 		return sum;
 	}
 
-	int UpdateStrength(int id, LargeNumber* lNum) {
-		dividedStrength.insert({ id, std::unique_ptr<LargeNumber>(lNum) });
+	int UpdateStrength(int id, float lNum) {
+		dividedStrength[id] = lNum;
 		return 0;
 	}
 
@@ -103,14 +95,10 @@ public:
 	}
 
 	std::string ToString() {
-		std::string str = "";
-		str += "Height:(" + std::to_string(heightClimed->Value()) + "," + std::to_string(heightClimed->Exponent()) + ")\n";
-		str += "Strength:";
-		for (const auto& kv : dividedStrength)
-			str += "ID:" + std::to_string(kv.first) + "(" + std::to_string(kv.second->Value()) + "," + std::to_string(kv.second->Exponent()) + ")";
-		return str;
+		return "Height:(" + std::to_string(heightClimed) + ")";
 	}
 
 private:
 	float lastPushTime = 0;	//In ms
+	const float startStrength = 0.3f;
 };

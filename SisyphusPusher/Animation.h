@@ -12,17 +12,11 @@
 class Animation
 {
 public:
-	Animation(std::vector<SDL_Surface*> frames, const float timeBetweenFrames, SDL_Rect window, Sisyphus* sisyphus) {
-		this->frames = frames;
-		this->sisyphus = sisyphus;
-		interval = timeBetweenFrames;
-		rect = window;
-	}
+	Animation(std::vector<SDL_Texture*> frames, const float timeBetweenFrames, SDL_Rect window, Sisyphus* sisyphus) :
+		sisyphus(sisyphus), frames(frames), interval(timeBetweenFrames), rect(window) { }
 
 	int Draw(SDL_Renderer* renderer) {
-		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, frames.at(frameCounter));
-		SDL_RenderCopy(renderer, texture, NULL, &rect);
-		SDL_DestroyTexture(texture);
+		SDL_RenderCopy(renderer, frames.at(frameCounter), NULL, &rect);
 		if (lastUpdateTime + interval > SDL_GetTicks() || !sisyphus->isPushing)
 			return 0;
 		lastUpdateTime = SDL_GetTicks();
@@ -32,7 +26,7 @@ public:
 	}
 
 private:
-	std::vector<SDL_Surface*> frames;
+	std::vector<SDL_Texture*> frames;
 	Uint32 lastUpdateTime = 0;
 	Uint32 interval;
 	int frameCounter = 0;

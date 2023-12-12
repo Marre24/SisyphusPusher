@@ -6,35 +6,20 @@ class ExitButton
 {
 public:
     bool exited = false;
-	ExitButton(int x, int y, std::string buttonTexturePath, std::string hoverTexturePath, LargeNumber* cost, float coefficient) {
+	ExitButton(int x, int y, int w, int h, SDL_Texture* btn, SDL_Texture* btnHover, SDL_Texture* surfaceMessage) :
+        surfaceMessage(surfaceMessage), btn(btn), btnHover(btnHover)
+    {
         rect = { x, y, 64, 64 };
-        btn = IMG_Load(buttonTexturePath.c_str());
-        btnHover = IMG_Load(hoverTexturePath.c_str());
+        textRect = { x + 10, y + 10, w, h };
 	}
+
 
     int Draw(SDL_Renderer* renderer, TTF_Font* font){
         if (isHovering)
-            SetTexture(btnHover, renderer);
+            SDL_RenderCopy(renderer, btnHover, NULL, &rect);
         else
-            SetTexture(btn, renderer);
-        
-        SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "Exit", { 255, 0, 0 });
-        DrawTexture(renderer, new SDL_Rect{ rect.x + 10, rect.y + 10, surfaceMessage->w, surfaceMessage->h }, surfaceMessage);
-        SDL_FreeSurface(surfaceMessage);
-        return 0;
-    }
+            SDL_RenderCopy(renderer, btn, NULL, &rect);
 
-    int DrawTexture(SDL_Renderer* renderer, SDL_Rect* rect, SDL_Surface* surface) {
-        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_RenderCopy(renderer, texture, NULL, rect);
-        SDL_DestroyTexture(texture);
-        return 0;
-    }
-
-    int SetTexture(SDL_Surface* surface, SDL_Renderer* renderer) {
-        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_RenderCopy(renderer, texture, NULL, &rect);
-        SDL_DestroyTexture(texture);
         return 0;
     }
 
@@ -54,7 +39,9 @@ public:
     }
 private:
     bool isHovering = false;
-    SDL_Rect rect = { 0, 0, 0, 0 };
-    SDL_Surface* btn;
-    SDL_Surface* btnHover;
+    SDL_Rect rect;
+    SDL_Rect textRect;
+    SDL_Texture* btn;
+    SDL_Texture* btnHover;
+    SDL_Texture* surfaceMessage;
 };

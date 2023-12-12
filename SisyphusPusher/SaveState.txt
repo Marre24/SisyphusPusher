@@ -1,9 +1,8 @@
-Glory:(32.393913,0)
-Height:(2.100031,0)
-Strength:ID:1(5.199999,0)ID:2(0.000000,0)ID:3(0.000000,0)ID:4(0.000000,0)ID:5(0.000000,0)ID:6(0.000000,0)ID:7(0.000000,0)ID:8(0.000000,0)ID:9(0.000000,0)ID:10(0.000000,0)
-Strength:AmountBought:26
-Strength:AmountBought:0
-Strength:AmountBought:0
+Glory:(746.965942)
+Height:(2999.302002)
+Strength:AmountBought:25
+Strength:AmountBought:13
+Strength:AmountBought:1
 Strength:AmountBought:0
 Strength:AmountBought:0
 Strength:AmountBought:0
@@ -12,4 +11,4 @@ Strength:AmountBought:0
 Strength:AmountBought:0
 Strength:AmountBought:0
 Stamina:AmountBought:1
-StaminaExpand:AmountBought:0
+StaminaExpand:AmountBought:1

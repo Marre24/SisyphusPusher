@@ -9,11 +9,11 @@
 #include "Glory.h";
 #include "Sisyphus.h";
 
-class StaminaExpandButton : Button
+class StaminaExpandButton : BuyButton
 {
 public:
-	StaminaExpandButton(int x, int y, std::string buttonTexturePath, std::string hoverTexturePath, Sisyphus* sisyphus, LargeNumber cost, float staminaReward, float coefficient) : 
-		Button(x, y, buttonTexturePath, hoverTexturePath, cost, coefficient)
+	StaminaExpandButton(int x, int y, SDL_Texture* btn, SDL_Texture* btnHover, Sisyphus* sisyphus, float cost, float staminaReward, float coefficient) :
+		BuyButton(x, y, btn, btnHover, cost, coefficient)
 	{
 		this->staminaReward = staminaReward;
 		this->sisyphus = sisyphus;
@@ -26,17 +26,17 @@ public:
 
     int Draw(SDL_Renderer* renderer, TTF_Font* font, TTF_Font* smallFont)
     {
-        Button::Draw(renderer);
+        BuyButton::Draw(renderer);
 
         SDL_Surface* surfaceMessage;
         SDL_Color textColor;
 
-        if (sisyphus->glory->IsGreaterThan(&currentCost))
+        if (sisyphus->glory->IsGreaterThan(currentCost))
             textColor = { 50, 205, 50 };
         else
             textColor = { 255, 0, 0 };
 
-        surfaceMessage = TTF_RenderText_Solid(font, currentCost.ToString().c_str(), textColor);
+        surfaceMessage = TTF_RenderText_Solid(font, std::to_string(currentCost).c_str(), textColor);
 
         if (amountBought > maxBuy) {
             SDL_FreeSurface(surfaceMessage);
@@ -62,8 +62,8 @@ public:
 
 	int Update() {
         sisyphus->SetMaxStamina(staminaReward * amountBought + 100);
-        currentCost.Times(pow(coefficient, amountBought), false, baseCost);
-		Button::Update();
+        currentCost = baseCost * pow(coefficient, amountBought);
+		BuyButton::Update();
 
 		return 0;
 	}
@@ -71,11 +71,11 @@ public:
 	int OnClick() {
 		if (!isHovering)
 			return 0;
-		if (sisyphus->glory->Pay(&currentCost) < 0)
+		if (sisyphus->glory->Pay(currentCost) < 0)
 			return -1;
 		if (++amountBought >= maxBuy)
 			return -1;
-		currentCost.Times(coefficient);
+        currentCost = baseCost * pow(coefficient, amountBought);
 		sisyphus->SetMaxStamina(staminaReward * amountBought + 100);
 		return 0;
 	}

@@ -11,10 +11,9 @@ class Ground
 {
 public:
 
-	Ground(Sisyphus* sisyphus) {
-		ground1 = std::unique_ptr<SDL_Surface>(IMG_Load("Ground1.png"));
-		ground2 = std::unique_ptr<SDL_Surface>(IMG_Load("Ground2.png"));
-		this->sisyphus = sisyphus;
+	Ground(Sisyphus* sisyphus, SDL_Texture* ground1, SDL_Texture* ground2) :
+		ground1(ground1), ground2(ground2), sisyphus(sisyphus)
+	{
 	}
 
 	int Draw(SDL_Renderer* renderer) {
@@ -30,18 +29,14 @@ public:
 		if (rect2.x <= -1014)
 			rect2 = { 1014,28,1024,1024 };
 
-		SDL_Texture* texture1 = SDL_CreateTextureFromSurface(renderer, ground1.get());
-		SDL_RenderCopy(renderer, texture1, NULL, &rect1);
-		SDL_DestroyTexture(texture1);
-		SDL_Texture* texture2 = SDL_CreateTextureFromSurface(renderer, ground2.get());
-		SDL_RenderCopy(renderer, texture2, NULL, &rect2);
-		SDL_DestroyTexture(texture2);
+		SDL_RenderCopy(renderer, ground1, NULL, &rect1);
+		SDL_RenderCopy(renderer, ground2, NULL, &rect2);
 		return 0;
 	}
 
 private:
-	std::unique_ptr<SDL_Surface> ground1;
-	std::unique_ptr<SDL_Surface> ground2;
+	SDL_Texture* ground1;
+	SDL_Texture* ground2;
 	SDL_Rect rect1{0,512 + 28,1024,1024};
 	SDL_Rect rect2{1024,28,1024,1024};
 	Sisyphus* sisyphus;
